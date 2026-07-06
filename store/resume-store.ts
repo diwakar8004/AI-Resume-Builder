@@ -1,369 +1,428 @@
-'use client';
-
 import { create } from 'zustand';
-import { persist, subscribeWithSelector } from 'zustand/middleware';
+import { devtools } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
-import type { ResumeData, ResumeVersion, SectionKey } from '@/types/resume';
-import { DEFAULT_RESUME } from '@/types/resume';
-import { generateId } from '@/lib/utils';
+import type {
+  ResumeData,
+  WorkExperience,
+  Education,
+  SkillCategory,
+  Project,
+  Certification,
+  Award,
+  Publication,
+  Research,
+  Language,
+  Interest,
+  VolunteerExperience,
+  Reference,
+  CustomSection,
+  SectionConfig,
+  ResumeCustomization,
+  PersonalInfo,
+  VersionHistoryEntry,
+} from '@/types/resume';
+import { defaultResumeData } from '@/types/resume';
+import { nanoid } from '@/lib/utils';
 
 interface ResumeStore {
-  // Current resume
-  resume: ResumeData;
+  // State
+  documentId: string | null;
+  documentTitle: string;
+  resumeData: ResumeData;
+  versionHistory: VersionHistoryEntry[];
   isDirty: boolean;
-  isSaving: boolean;
-  lastSaved: string | null;
-
-  // Version history
-  versions: ResumeVersion[];
-
-  // UI state
-  activeSection: SectionKey | null;
+  lastSaved: Date | null;
+  activeSection: string;
   previewScale: number;
-  showCustomization: boolean;
-  showAIPanel: boolean;
-  showVersionHistory: boolean;
+  isAIPanelOpen: boolean;
+  isCustomizationPanelOpen: boolean;
+  isVersionHistoryOpen: boolean;
 
-  // Actions — Resume
-  setResume: (resume: ResumeData) => void;
-  updatePersonalInfo: (info: Partial<ResumeData['personalInfo']>) => void;
+  // Actions — Document
+  setDocumentId: (id: string) => void;
+  setDocumentTitle: (title: string) => void;
+  loadResumeData: (data: ResumeData) => void;
+  resetResume: () => void;
+  markClean: () => void;
+  markDirty: () => void;
+
+  // Actions — Personal Info
+  updatePersonalInfo: (info: Partial<PersonalInfo>) => void;
+
+  // Actions — Summary
   updateSummary: (summary: string) => void;
 
-  addExperience: () => void;
-  updateExperience: (id: string, data: Partial<ResumeData['experience'][0]>) => void;
+  // Actions — Experience
+  addExperience: (exp?: Partial<WorkExperience>) => void;
+  updateExperience: (id: string, data: Partial<WorkExperience>) => void;
   removeExperience: (id: string) => void;
-  reorderExperience: (fromIndex: number, toIndex: number) => void;
+  reorderExperience: (from: number, to: number) => void;
 
-  addEducation: () => void;
-  updateEducation: (id: string, data: Partial<ResumeData['education'][0]>) => void;
+  // Actions — Education
+  addEducation: (edu?: Partial<Education>) => void;
+  updateEducation: (id: string, data: Partial<Education>) => void;
   removeEducation: (id: string) => void;
 
-  addSkill: () => void;
-  updateSkill: (id: string, data: Partial<ResumeData['skills'][0]>) => void;
-  removeSkill: (id: string) => void;
+  // Actions — Skills
+  addSkillCategory: (cat?: Partial<SkillCategory>) => void;
+  updateSkillCategory: (id: string, data: Partial<SkillCategory>) => void;
+  removeSkillCategory: (id: string) => void;
 
-  addProject: () => void;
-  updateProject: (id: string, data: Partial<ResumeData['projects'][0]>) => void;
+  // Actions — Projects
+  addProject: (proj?: Partial<Project>) => void;
+  updateProject: (id: string, data: Partial<Project>) => void;
   removeProject: (id: string) => void;
 
-  addCertification: () => void;
-  updateCertification: (id: string, data: Partial<ResumeData['certifications'][0]>) => void;
+  // Actions — Certifications
+  addCertification: (cert?: Partial<Certification>) => void;
+  updateCertification: (id: string, data: Partial<Certification>) => void;
   removeCertification: (id: string) => void;
 
-  addLanguage: () => void;
-  updateLanguage: (id: string, data: Partial<ResumeData['languages'][0]>) => void;
+  // Actions — Awards
+  addAward: (award?: Partial<Award>) => void;
+  updateAward: (id: string, data: Partial<Award>) => void;
+  removeAward: (id: string) => void;
+
+  // Actions — Publications
+  addPublication: (pub?: Partial<Publication>) => void;
+  updatePublication: (id: string, data: Partial<Publication>) => void;
+  removePublication: (id: string) => void;
+
+  // Actions — Research
+  addResearch: (res?: Partial<Research>) => void;
+  updateResearch: (id: string, data: Partial<Research>) => void;
+  removeResearch: (id: string) => void;
+
+  // Actions — Languages
+  addLanguage: (lang?: Partial<Language>) => void;
+  updateLanguage: (id: string, data: Partial<Language>) => void;
   removeLanguage: (id: string) => void;
 
-  updateCustomization: (data: Partial<ResumeData['customization']>) => void;
-  toggleSection: (key: SectionKey) => void;
-  reorderSections: (fromIndex: number, toIndex: number) => void;
+  // Actions — Interests
+  addInterest: (interest?: Partial<Interest>) => void;
+  updateInterest: (id: string, data: Partial<Interest>) => void;
+  removeInterest: (id: string) => void;
 
-  // Actions — Version history
-  saveVersion: (label?: string) => void;
-  restoreVersion: (versionId: string) => void;
+  // Actions — Volunteer
+  addVolunteer: (vol?: Partial<VolunteerExperience>) => void;
+  updateVolunteer: (id: string, data: Partial<VolunteerExperience>) => void;
+  removeVolunteer: (id: string) => void;
+
+  // Actions — References
+  addReference: (ref?: Partial<Reference>) => void;
+  updateReference: (id: string, data: Partial<Reference>) => void;
+  removeReference: (id: string) => void;
+
+  // Actions — Custom Sections
+  addCustomSection: () => void;
+  updateCustomSection: (id: string, data: Partial<CustomSection>) => void;
+  removeCustomSection: (id: string) => void;
+
+  // Actions — Section Order
+  updateSectionOrder: (sections: SectionConfig[]) => void;
+  toggleSection: (id: string) => void;
+
+  // Actions — Customization
+  updateCustomization: (data: Partial<ResumeCustomization>) => void;
+  setTemplate: (templateId: string) => void;
 
   // Actions — UI
-  setActiveSection: (section: SectionKey | null) => void;
+  setActiveSection: (section: string) => void;
   setPreviewScale: (scale: number) => void;
-  toggleCustomization: () => void;
   toggleAIPanel: () => void;
+  toggleCustomizationPanel: () => void;
   toggleVersionHistory: () => void;
-  setIsSaving: (saving: boolean) => void;
-  setLastSaved: (time: string) => void;
+
+  // Actions — Version History
+  saveVersion: (label?: string) => void;
+  restoreVersion: (id: string) => void;
 }
 
 export const useResumeStore = create<ResumeStore>()(
-  persist(
-    subscribeWithSelector(
-      immer((set, get) => ({
-        resume: { ...DEFAULT_RESUME, id: generateId() },
+  devtools(
+    immer((set, get) => ({
+        // Initial state
+        documentId: null,
+        documentTitle: 'Untitled Resume',
+        resumeData: defaultResumeData,
+        versionHistory: [],
         isDirty: false,
-        isSaving: false,
         lastSaved: null,
-        versions: [],
-        activeSection: null,
+        activeSection: 'personalInfo',
         previewScale: 0.7,
-        showCustomization: false,
-        showAIPanel: false,
-        showVersionHistory: false,
+        isAIPanelOpen: false,
+        isCustomizationPanelOpen: false,
+        isVersionHistoryOpen: false,
 
-        setResume: (resume) =>
-          set((state) => {
-            state.resume = resume;
-            state.isDirty = false;
-          }),
+        // Document actions
+        setDocumentId: (id) => set((s) => { s.documentId = id; }),
+        setDocumentTitle: (title) => set((s) => { s.documentTitle = title; s.isDirty = true; }),
+        loadResumeData: (data) => set((s) => { s.resumeData = data; s.isDirty = false; }),
+        resetResume: () => set((s) => { s.resumeData = defaultResumeData; s.isDirty = false; }),
+        markClean: () => set((s) => { s.isDirty = false; s.lastSaved = new Date(); }),
+        markDirty: () => set((s) => { s.isDirty = true; }),
 
-        updatePersonalInfo: (info) =>
-          set((state) => {
-            Object.assign(state.resume.personalInfo, info);
-            state.isDirty = true;
-          }),
+        // Personal info
+        updatePersonalInfo: (info) => set((s) => {
+          Object.assign(s.resumeData.personalInfo, info);
+          s.isDirty = true;
+        }),
 
-        updateSummary: (summary) =>
-          set((state) => {
-            state.resume.summary = summary;
-            state.isDirty = true;
-          }),
+        // Summary
+        updateSummary: (summary) => set((s) => { s.resumeData.summary = summary; s.isDirty = true; }),
 
-        addExperience: () =>
-          set((state) => {
-            state.resume.experience.push({
-              id: generateId(),
-              company: '',
-              position: '',
-              location: '',
-              startDate: '',
-              endDate: '',
-              current: false,
-              description: '',
-              highlights: [],
-            });
-            state.isDirty = true;
-          }),
+        // Experience
+        addExperience: (exp) => set((s) => {
+          s.resumeData.experience.push({
+            id: nanoid(),
+            company: '',
+            position: '',
+            startDate: '',
+            endDate: '',
+            current: false,
+            description: '',
+            highlights: [],
+            ...exp,
+          });
+          s.isDirty = true;
+        }),
+        updateExperience: (id, data) => set((s) => {
+          const idx = s.resumeData.experience.findIndex((e) => e.id === id);
+          if (idx !== -1) Object.assign(s.resumeData.experience[idx], data);
+          s.isDirty = true;
+        }),
+        removeExperience: (id) => set((s) => {
+          s.resumeData.experience = s.resumeData.experience.filter((e) => e.id !== id);
+          s.isDirty = true;
+        }),
+        reorderExperience: (from, to) => set((s) => {
+          const [item] = s.resumeData.experience.splice(from, 1);
+          s.resumeData.experience.splice(to, 0, item);
+          s.isDirty = true;
+        }),
 
-        updateExperience: (id, data) =>
-          set((state) => {
-            const idx = state.resume.experience.findIndex((e) => e.id === id);
-            if (idx !== -1) Object.assign(state.resume.experience[idx], data);
-            state.isDirty = true;
-          }),
+        // Education
+        addEducation: (edu) => set((s) => {
+          s.resumeData.education.push({ id: nanoid(), institution: '', degree: '', field: '', startDate: '', endDate: '', current: false, ...edu });
+          s.isDirty = true;
+        }),
+        updateEducation: (id, data) => set((s) => {
+          const idx = s.resumeData.education.findIndex((e) => e.id === id);
+          if (idx !== -1) Object.assign(s.resumeData.education[idx], data);
+          s.isDirty = true;
+        }),
+        removeEducation: (id) => set((s) => {
+          s.resumeData.education = s.resumeData.education.filter((e) => e.id !== id);
+          s.isDirty = true;
+        }),
 
-        removeExperience: (id) =>
-          set((state) => {
-            state.resume.experience = state.resume.experience.filter((e) => e.id !== id);
-            state.isDirty = true;
-          }),
+        // Skills
+        addSkillCategory: (cat) => set((s) => {
+          s.resumeData.skills.push({ id: nanoid(), name: 'Skills', skills: [], ...cat });
+          s.isDirty = true;
+        }),
+        updateSkillCategory: (id, data) => set((s) => {
+          const idx = s.resumeData.skills.findIndex((e) => e.id === id);
+          if (idx !== -1) Object.assign(s.resumeData.skills[idx], data);
+          s.isDirty = true;
+        }),
+        removeSkillCategory: (id) => set((s) => {
+          s.resumeData.skills = s.resumeData.skills.filter((e) => e.id !== id);
+          s.isDirty = true;
+        }),
 
-        reorderExperience: (fromIndex, toIndex) =>
-          set((state) => {
-            const items = state.resume.experience.splice(fromIndex, 1);
-            state.resume.experience.splice(toIndex, 0, ...items);
-            state.isDirty = true;
-          }),
+        // Projects
+        addProject: (proj) => set((s) => {
+          s.resumeData.projects.push({ id: nanoid(), name: '', description: '', highlights: [], technologies: [], ...proj });
+          s.isDirty = true;
+        }),
+        updateProject: (id, data) => set((s) => {
+          const idx = s.resumeData.projects.findIndex((e) => e.id === id);
+          if (idx !== -1) Object.assign(s.resumeData.projects[idx], data);
+          s.isDirty = true;
+        }),
+        removeProject: (id) => set((s) => {
+          s.resumeData.projects = s.resumeData.projects.filter((e) => e.id !== id);
+          s.isDirty = true;
+        }),
 
-        addEducation: () =>
-          set((state) => {
-            state.resume.education.push({
-              id: generateId(),
-              institution: '',
-              degree: '',
-              field: '',
-              location: '',
-              startDate: '',
-              endDate: '',
-              current: false,
-              gpa: '',
-              description: '',
-            });
-            state.isDirty = true;
-          }),
+        // Certifications
+        addCertification: (cert) => set((s) => {
+          s.resumeData.certifications.push({ id: nanoid(), name: '', issuer: '', date: '', ...cert });
+          s.isDirty = true;
+        }),
+        updateCertification: (id, data) => set((s) => {
+          const idx = s.resumeData.certifications.findIndex((e) => e.id === id);
+          if (idx !== -1) Object.assign(s.resumeData.certifications[idx], data);
+          s.isDirty = true;
+        }),
+        removeCertification: (id) => set((s) => {
+          s.resumeData.certifications = s.resumeData.certifications.filter((e) => e.id !== id);
+          s.isDirty = true;
+        }),
 
-        updateEducation: (id, data) =>
-          set((state) => {
-            const idx = state.resume.education.findIndex((e) => e.id === id);
-            if (idx !== -1) Object.assign(state.resume.education[idx], data);
-            state.isDirty = true;
-          }),
+        // Awards
+        addAward: (award) => set((s) => {
+          s.resumeData.awards.push({ id: nanoid(), title: '', issuer: '', date: '', ...award });
+          s.isDirty = true;
+        }),
+        updateAward: (id, data) => set((s) => {
+          const idx = s.resumeData.awards.findIndex((e) => e.id === id);
+          if (idx !== -1) Object.assign(s.resumeData.awards[idx], data);
+          s.isDirty = true;
+        }),
+        removeAward: (id) => set((s) => {
+          s.resumeData.awards = s.resumeData.awards.filter((e) => e.id !== id);
+          s.isDirty = true;
+        }),
 
-        removeEducation: (id) =>
-          set((state) => {
-            state.resume.education = state.resume.education.filter((e) => e.id !== id);
-            state.isDirty = true;
-          }),
+        // Publications
+        addPublication: (pub) => set((s) => {
+          s.resumeData.publications.push({ id: nanoid(), title: '', ...pub });
+          s.isDirty = true;
+        }),
+        updatePublication: (id, data) => set((s) => {
+          const idx = s.resumeData.publications.findIndex((e) => e.id === id);
+          if (idx !== -1) Object.assign(s.resumeData.publications[idx], data);
+          s.isDirty = true;
+        }),
+        removePublication: (id) => set((s) => {
+          s.resumeData.publications = s.resumeData.publications.filter((e) => e.id !== id);
+          s.isDirty = true;
+        }),
 
-        addSkill: () =>
-          set((state) => {
-            state.resume.skills.push({ id: generateId(), name: '', level: 'intermediate', category: '' });
-            state.isDirty = true;
-          }),
+        // Research
+        addResearch: (res) => set((s) => {
+          s.resumeData.research.push({ id: nanoid(), title: '', description: '', ...res });
+          s.isDirty = true;
+        }),
+        updateResearch: (id, data) => set((s) => {
+          const idx = s.resumeData.research.findIndex((e) => e.id === id);
+          if (idx !== -1) Object.assign(s.resumeData.research[idx], data);
+          s.isDirty = true;
+        }),
+        removeResearch: (id) => set((s) => {
+          s.resumeData.research = s.resumeData.research.filter((e) => e.id !== id);
+          s.isDirty = true;
+        }),
 
-        updateSkill: (id, data) =>
-          set((state) => {
-            const idx = state.resume.skills.findIndex((s) => s.id === id);
-            if (idx !== -1) Object.assign(state.resume.skills[idx], data);
-            state.isDirty = true;
-          }),
+        // Languages
+        addLanguage: (lang) => set((s) => {
+          s.resumeData.languages.push({ id: nanoid(), name: '', proficiency: 'professional', ...lang });
+          s.isDirty = true;
+        }),
+        updateLanguage: (id, data) => set((s) => {
+          const idx = s.resumeData.languages.findIndex((e) => e.id === id);
+          if (idx !== -1) Object.assign(s.resumeData.languages[idx], data);
+          s.isDirty = true;
+        }),
+        removeLanguage: (id) => set((s) => {
+          s.resumeData.languages = s.resumeData.languages.filter((e) => e.id !== id);
+          s.isDirty = true;
+        }),
 
-        removeSkill: (id) =>
-          set((state) => {
-            state.resume.skills = state.resume.skills.filter((s) => s.id !== id);
-            state.isDirty = true;
-          }),
+        // Interests
+        addInterest: (interest) => set((s) => {
+          s.resumeData.interests.push({ id: nanoid(), name: '', ...interest });
+          s.isDirty = true;
+        }),
+        updateInterest: (id, data) => set((s) => {
+          const idx = s.resumeData.interests.findIndex((e) => e.id === id);
+          if (idx !== -1) Object.assign(s.resumeData.interests[idx], data);
+          s.isDirty = true;
+        }),
+        removeInterest: (id) => set((s) => {
+          s.resumeData.interests = s.resumeData.interests.filter((e) => e.id !== id);
+          s.isDirty = true;
+        }),
 
-        addProject: () =>
-          set((state) => {
-            state.resume.projects.push({
-              id: generateId(),
-              name: '',
-              description: '',
-              url: '',
-              github: '',
-              technologies: [],
-              startDate: '',
-              endDate: '',
-              current: false,
-              highlights: [],
-            });
-            state.isDirty = true;
-          }),
+        // Volunteer
+        addVolunteer: (vol) => set((s) => {
+          s.resumeData.volunteer.push({ id: nanoid(), organization: '', role: '', startDate: '', endDate: '', current: false, description: '', ...vol });
+          s.isDirty = true;
+        }),
+        updateVolunteer: (id, data) => set((s) => {
+          const idx = s.resumeData.volunteer.findIndex((e) => e.id === id);
+          if (idx !== -1) Object.assign(s.resumeData.volunteer[idx], data);
+          s.isDirty = true;
+        }),
+        removeVolunteer: (id) => set((s) => {
+          s.resumeData.volunteer = s.resumeData.volunteer.filter((e) => e.id !== id);
+          s.isDirty = true;
+        }),
 
-        updateProject: (id, data) =>
-          set((state) => {
-            const idx = state.resume.projects.findIndex((p) => p.id === id);
-            if (idx !== -1) Object.assign(state.resume.projects[idx], data);
-            state.isDirty = true;
-          }),
+        // References
+        addReference: (ref) => set((s) => {
+          s.resumeData.references.push({ id: nanoid(), name: '', title: '', company: '', ...ref });
+          s.isDirty = true;
+        }),
+        updateReference: (id, data) => set((s) => {
+          const idx = s.resumeData.references.findIndex((e) => e.id === id);
+          if (idx !== -1) Object.assign(s.resumeData.references[idx], data);
+          s.isDirty = true;
+        }),
+        removeReference: (id) => set((s) => {
+          s.resumeData.references = s.resumeData.references.filter((e) => e.id !== id);
+          s.isDirty = true;
+        }),
 
-        removeProject: (id) =>
-          set((state) => {
-            state.resume.projects = state.resume.projects.filter((p) => p.id !== id);
-            state.isDirty = true;
-          }),
+        // Custom Sections
+        addCustomSection: () => set((s) => {
+          const id = nanoid();
+          s.resumeData.customSections.push({ id, title: 'Custom Section', items: [] });
+          s.resumeData.sectionOrder.push({ id: `custom-${id}`, label: 'Custom Section', enabled: true, order: s.resumeData.sectionOrder.length, customId: id });
+          s.isDirty = true;
+        }),
+        updateCustomSection: (id, data) => set((s) => {
+          const idx = s.resumeData.customSections.findIndex((e) => e.id === id);
+          if (idx !== -1) Object.assign(s.resumeData.customSections[idx], data);
+          s.isDirty = true;
+        }),
+        removeCustomSection: (id) => set((s) => {
+          s.resumeData.customSections = s.resumeData.customSections.filter((e) => e.id !== id);
+          s.resumeData.sectionOrder = s.resumeData.sectionOrder.filter((e) => e.customId !== id);
+          s.isDirty = true;
+        }),
 
-        addCertification: () =>
-          set((state) => {
-            state.resume.certifications.push({
-              id: generateId(),
-              name: '',
-              issuer: '',
-              date: '',
-              expiry: '',
-              credentialId: '',
-              url: '',
-            });
-            state.isDirty = true;
-          }),
+        // Section Order
+        updateSectionOrder: (sections) => set((s) => { s.resumeData.sectionOrder = sections; s.isDirty = true; }),
+        toggleSection: (id) => set((s) => {
+          const idx = s.resumeData.sectionOrder.findIndex((e) => e.id === id);
+          if (idx !== -1) s.resumeData.sectionOrder[idx].enabled = !s.resumeData.sectionOrder[idx].enabled;
+          s.isDirty = true;
+        }),
 
-        updateCertification: (id, data) =>
-          set((state) => {
-            const idx = state.resume.certifications.findIndex((c) => c.id === id);
-            if (idx !== -1) Object.assign(state.resume.certifications[idx], data);
-            state.isDirty = true;
-          }),
+        // Customization
+        updateCustomization: (data) => set((s) => { Object.assign(s.resumeData.customization, data); s.isDirty = true; }),
+        setTemplate: (templateId) => set((s) => { s.resumeData.customization.template = templateId; s.isDirty = true; }),
 
-        removeCertification: (id) =>
-          set((state) => {
-            state.resume.certifications = state.resume.certifications.filter((c) => c.id !== id);
-            state.isDirty = true;
-          }),
+        // UI
+        setActiveSection: (section) => set((s) => { s.activeSection = section; }),
+        setPreviewScale: (scale) => set((s) => { s.previewScale = scale; }),
+        toggleAIPanel: () => set((s) => { s.isAIPanelOpen = !s.isAIPanelOpen; }),
+        toggleCustomizationPanel: () => set((s) => { s.isCustomizationPanelOpen = !s.isCustomizationPanelOpen; }),
+        toggleVersionHistory: () => set((s) => { s.isVersionHistoryOpen = !s.isVersionHistoryOpen; }),
 
-        addLanguage: () =>
-          set((state) => {
-            state.resume.languages.push({ id: generateId(), name: '', level: 'professional' });
-            state.isDirty = true;
-          }),
-
-        updateLanguage: (id, data) =>
-          set((state) => {
-            const idx = state.resume.languages.findIndex((l) => l.id === id);
-            if (idx !== -1) Object.assign(state.resume.languages[idx], data);
-            state.isDirty = true;
-          }),
-
-        removeLanguage: (id) =>
-          set((state) => {
-            state.resume.languages = state.resume.languages.filter((l) => l.id !== id);
-            state.isDirty = true;
-          }),
-
-        updateCustomization: (data) =>
-          set((state) => {
-            Object.assign(state.resume.customization, data);
-            state.isDirty = true;
-          }),
-
-        toggleSection: (key) =>
-          set((state) => {
-            const section = state.resume.sections.find((s) => s.key === key);
-            if (section) section.visible = !section.visible;
-            state.isDirty = true;
-          }),
-
-        reorderSections: (fromIndex, toIndex) =>
-          set((state) => {
-            const items = state.resume.sections.splice(fromIndex, 1);
-            state.resume.sections.splice(toIndex, 0, ...items);
-            state.resume.sections.forEach((s, i) => (s.order = i));
-            state.isDirty = true;
-          }),
-
-        saveVersion: (label) =>
-          set((state) => {
-            const version: ResumeVersion = {
-              id: generateId(),
-              resumeId: state.resume.id,
-              snapshot: JSON.parse(JSON.stringify(state.resume)),
-              createdAt: new Date().toISOString(),
-              label,
-            };
-            state.versions.unshift(version);
-            if (state.versions.length > 20) state.versions.pop();
-          }),
-
-        restoreVersion: (versionId) =>
-          set((state) => {
-            const version = state.versions.find((v) => v.id === versionId);
-            if (version) {
-              state.resume = JSON.parse(JSON.stringify(version.snapshot));
-              state.isDirty = true;
-            }
-          }),
-
-        setActiveSection: (section) =>
-          set((state) => {
-            state.activeSection = section;
-          }),
-
-        setPreviewScale: (scale) =>
-          set((state) => {
-            state.previewScale = scale;
-          }),
-
-        toggleCustomization: () =>
-          set((state) => {
-            state.showCustomization = !state.showCustomization;
-            if (state.showCustomization) {
-              state.showAIPanel = false;
-              state.showVersionHistory = false;
-            }
-          }),
-
-        toggleAIPanel: () =>
-          set((state) => {
-            state.showAIPanel = !state.showAIPanel;
-            if (state.showAIPanel) {
-              state.showCustomization = false;
-              state.showVersionHistory = false;
-            }
-          }),
-
-        toggleVersionHistory: () =>
-          set((state) => {
-            state.showVersionHistory = !state.showVersionHistory;
-            if (state.showVersionHistory) {
-              state.showCustomization = false;
-              state.showAIPanel = false;
-            }
-          }),
-
-        setIsSaving: (saving) =>
-          set((state) => {
-            state.isSaving = saving;
-          }),
-
-        setLastSaved: (time) =>
-          set((state) => {
-            state.lastSaved = time;
-            state.isDirty = false;
-          }),
-      }))
-    ),
-    {
-      name: 'ai-resume-store',
-      partialize: (state) => ({
-        resume: state.resume,
-        versions: state.versions,
-      }),
-    }
+        // Version History
+        saveVersion: (label) => set((s) => {
+          s.versionHistory.unshift({
+            id: nanoid(),
+            documentId: s.documentId || '',
+            snapshot: JSON.parse(JSON.stringify(s.resumeData)),
+            createdAt: new Date(),
+            label,
+          });
+          // Keep only last 20 versions
+          if (s.versionHistory.length > 20) s.versionHistory = s.versionHistory.slice(0, 20);
+        }),
+        restoreVersion: (id) => set((s) => {
+          const version = s.versionHistory.find((v) => v.id === id);
+          if (version) {
+            s.resumeData = JSON.parse(JSON.stringify(version.snapshot));
+            s.isDirty = true;
+          }
+        }),
+      })),
+    { name: 'ResumeStore' }
   )
 );
