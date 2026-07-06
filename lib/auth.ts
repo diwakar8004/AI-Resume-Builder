@@ -27,6 +27,7 @@ ensureEnv([
 
 // Google-only auth with Prisma adapter
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  secret: process.env.NEXTAUTH_SECRET,
   adapter: PrismaAdapter(prisma),
   providers: [
     Google({
@@ -40,6 +41,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     error: '/login',
   },
   session: { strategy: 'jwt' },
+  debug: process.env.NODE_ENV !== 'production',
   callbacks: {
     async jwt({ token, user }) {
       if (user) token.id = user.id;
