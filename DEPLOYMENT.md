@@ -4,7 +4,7 @@ This document lists steps to ensure authentication works after deploying to Verc
 
 Required environment variables (set these in Vercel Project Settings -> Environment Variables):
 
-- `DATABASE_URL` — production Postgres connection
+- `DATABASE_URL` — production Postgres connection (must not point to `localhost`)
 - `NEXTAUTH_URL` — e.g. `https://your-vercel-app.vercel.app`
 - `NEXTAUTH_SECRET` — secure random string (recommend `openssl rand -hex 32`)
 - `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`

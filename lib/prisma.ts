@@ -1,11 +1,33 @@
 import { PrismaClient } from '@prisma/client';
 
+function validateDatabaseUrl(url: string | undefined): string {
+  if (!url) {
+    throw new Error(
+      'Missing DATABASE_URL. Set a production database connection string in your Vercel environment variables.'
+    );
+  }
+
+  const normalized = url.toLowerCase();
+  if (
+    process.env.NODE_ENV === 'production' &&
+    (normalized.includes('localhost') || normalized.includes('127.0.0.1'))
+  ) {
+    throw new Error(
+      'DATABASE_URL in production must not point to localhost. Use a cloud-accessible PostgreSQL database connection string for Vercel.'
+    );
+  }
+
+  return url;
+}
+
 declare global {
   // eslint-disable-next-line no-var
   var prisma: PrismaClient | undefined;
 }
 
-const prisma = global.prisma || new PrismaClient();
+const prisma = global.prisma || new PrismaClient({
+  datasources: { db: { url: validateDatabaseUrl(process.env.DATABASE_URL) } },
+});
 if (process.env.NODE_ENV !== 'production') global.prisma = prisma;
 
 export default prisma;
