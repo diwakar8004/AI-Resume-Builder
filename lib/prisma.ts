@@ -21,7 +21,6 @@ function validateDatabaseUrl(url: string | undefined): string {
 }
 
 declare global {
-  // eslint-disable-next-line no-var
   var prisma: PrismaClient | undefined;
 }
 

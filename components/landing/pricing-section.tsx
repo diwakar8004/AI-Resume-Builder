@@ -105,7 +105,7 @@ export function PricingSection() {
             </span>
           </h2>
           <p className="text-white/50 max-w-xl mx-auto mb-8">
-            Start free. Upgrade when you're ready. Cancel anytime.
+            Start free. Upgrade when you&apos;re ready. Cancel anytime.
           </p>
 
           {/* Billing toggle */}

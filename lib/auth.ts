@@ -13,7 +13,6 @@ function ensureEnv(required: string[]) {
     throw new Error(msg);
   } else {
     // helpful dev-time warning
-    // eslint-disable-next-line no-console
     console.warn('[env check]', msg);
   }
 }

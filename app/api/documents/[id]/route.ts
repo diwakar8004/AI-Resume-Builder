@@ -11,6 +11,7 @@ const updateDocumentSchema = z.object({
   starred: z.boolean().optional(),
   resumeData: z.any().optional(),
 });
+type UpdateDocumentData = z.infer<typeof updateDocumentSchema>;
 
 // GET /api/documents/[id]
 export async function GET(
@@ -75,7 +76,7 @@ export async function PATCH(
     const existing = await prisma.document.findUnique({ where: { id } });
     if (!existing || existing.ownerId !== (user.id as string)) return NextResponse.json({ error: 'Document not found' }, { status: 404 });
 
-    const data: any = { ...body };
+    const data: Partial<UpdateDocumentData> = { ...body };
     if (body.resumeData !== undefined) data.resumeData = body.resumeData;
     const updated = await prisma.document.update({ where: { id }, data });
     return NextResponse.json({ document: updated });

@@ -4,9 +4,7 @@ import { useState } from 'react';
 import {
   Sparkles,
   Wand2,
-  RefreshCw,
   Copy,
-  ChevronDown,
   CheckCircle2,
   Loader2,
   Zap,
@@ -26,7 +24,7 @@ const quickActions = [
 const toneOptions = ['Professional', 'Creative', 'Technical', 'Executive', 'Academic'];
 
 export function AIPanel() {
-  const { resumeData, updateSummary, activeSection } = useResumeStore();
+  const { resumeData, updateSummary } = useResumeStore();
   const [isLoading, setIsLoading] = useState(false);
   const [generatedText, setGeneratedText] = useState('');
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);

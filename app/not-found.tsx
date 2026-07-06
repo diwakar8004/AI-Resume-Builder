@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Sparkles, ArrowRight, Home, HelpCircle } from 'lucide-react';
+import { Sparkles, Home, HelpCircle } from 'lucide-react';
 
 export default function NotFound() {
   return (

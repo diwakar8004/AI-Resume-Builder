@@ -9,8 +9,8 @@ async function getHtml2Pdf() {
     throw new Error('PDF export can only be used in the browser.');
   }
 
-  const module = await import('html2pdf.js');
-  return module.default || module;
+  const html2pdfModule = await import('html2pdf.js');
+  return html2pdfModule.default || html2pdfModule;
 }
 
 /**
@@ -31,7 +31,7 @@ function sanitizeUnsupportedCSSColors(element: HTMLElement): void {
     const style = htmlEl.getAttribute('style') || '';
     
     // Replace modern CSS color functions with hex fallbacks
-    let sanitized = style
+    const sanitized = style
       // lab() function - replace with white as fallback
       .replace(/lab\([^)]*\)/g, '#FFFFFF')
       // lch() function
@@ -100,7 +100,7 @@ export async function exportResumeToPDF(options: PDFExportOptions = {}): Promise
   element.style.fontFamily = '"Inter", "Helvetica", "Arial", sans-serif';
 
   // Configure html2pdf options for A4 with proper settings
-  const opt: any = {
+  const opt = {
     margin: margin,
     filename: filename,
     image: { type: 'jpeg' as const, quality: 0.98 },
@@ -204,7 +204,7 @@ export async function exportATSFriendlyPDF(options: PDFExportOptions = {}): Prom
   element.style.backgroundColor = '#ffffff';
   element.style.color = '#111111';
 
-  const opt: any = {
+  const opt = {
     margin: 10,
     filename: filename,
     image: { type: 'jpeg' as const, quality: 0.95 },

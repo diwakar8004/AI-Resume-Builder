@@ -5,7 +5,6 @@ import {
   Sparkles,
   Save,
   Download,
-  Eye,
   ChevronLeft,
   Loader2,
   Palette,
@@ -21,17 +20,6 @@ import { exportResumeToPDF } from '@/lib/pdf-export';
 import { toast } from 'sonner';
 import { Autosave } from '@/components/editor/autosave';
 
-// ─── Section Navigation Items ─────────────────────────────────────────────
-const sections = [
-  { id: 'personalInfo', label: 'Personal Info', emoji: '👤' },
-  { id: 'summary', label: 'Summary', emoji: '📝' },
-  { id: 'experience', label: 'Experience', emoji: '💼' },
-  { id: 'education', label: 'Education', emoji: '🎓' },
-  { id: 'skills', label: 'Skills', emoji: '⚡' },
-  { id: 'projects', label: 'Projects', emoji: '🚀' },
-  { id: 'certifications', label: 'Certifications', emoji: '🏅' },
-  { id: 'languages', label: 'Languages', emoji: '🌐' },
-];
 
 interface EditorShellProps {
   documentId: string;
@@ -78,8 +66,8 @@ export function EditorShell({ documentId, LeftPanel, CenterPanel, RightPanel }: 
       className="flex flex-col h-screen overflow-hidden"
       style={{ background: '#0A0A18' }}
     >
-      // Autosave component handles initial load and autosave wiring
-      // render it once per editor instance
+      {/* Autosave component handles initial load and autosave wiring
+          render it once per editor instance */}
       <Autosave documentId={documentId} />
       {/* ── Top Bar ────────────────────────────────────────────────────────── */}
       <header

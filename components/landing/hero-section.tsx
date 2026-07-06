@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowRight, Sparkles, Star, TrendingUp, CheckCircle2 } from 'lucide-react';
+import { ArrowRight, Sparkles, Star } from 'lucide-react';
 
 const floatingBadges = [
   { icon: '🎯', text: 'ATS Optimized', color: '#10B981', x: '5%', y: '25%', delay: '0s' },

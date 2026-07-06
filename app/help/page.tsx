@@ -6,12 +6,8 @@ import {
   Sparkles,
   ChevronLeft,
   Search,
-  BookOpen,
-  Zap,
-  Download,
-  CreditCard,
-  MessageSquare,
   ChevronDown,
+  MessageSquare,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 

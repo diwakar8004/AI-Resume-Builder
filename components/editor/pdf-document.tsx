@@ -1,4 +1,4 @@
-import { Document, Page, View, Text, StyleSheet, Link } from '@react-pdf/renderer';
+import { Document, Page, View, Text, StyleSheet } from '@react-pdf/renderer';
 import { ResumeData } from '@/types/resume';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────

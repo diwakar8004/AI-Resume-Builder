@@ -1,16 +1,12 @@
 'use client';
 
-import { useState } from 'react';
 import {
   Plus,
   Briefcase,
   Building2,
-  Calendar,
   DollarSign,
   MapPin,
-  CheckCircle,
   Clock,
-  Sparkles,
 } from 'lucide-react';
 
 type Job = {
@@ -73,7 +69,7 @@ const statusColors: Record<Job['status'], { text: string; bg: string; border: st
 };
 
 export default function JobTrackerPage() {
-  const [jobs, setJobs] = useState<Job[]>(initialJobs);
+  const jobs = initialJobs;
 
   return (
     <div className="min-h-screen p-6 md:p-8">

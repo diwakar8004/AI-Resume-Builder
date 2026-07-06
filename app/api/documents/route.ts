@@ -13,7 +13,7 @@ const createDocumentSchema = z.object({
 });
 
 // GET /api/documents — list all documents for the authenticated user
-export async function GET(_req: NextRequest) {
+export async function GET() {
   const session = await auth();
   const user = session?.user;
   if (!user || !user.id) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

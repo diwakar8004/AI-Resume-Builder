@@ -140,7 +140,7 @@ interface ResumeStore {
 
 export const useResumeStore = create<ResumeStore>()(
   devtools(
-    immer((set, get) => ({
+    immer((set) => ({
         // Initial state
         documentId: null,
         documentTitle: 'Untitled Resume',
