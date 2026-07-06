@@ -3,6 +3,28 @@ import Google from 'next-auth/providers/google';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import prisma from './prisma';
 
+// Basic runtime env validation to give clearer errors in production
+function ensureEnv(required: string[]) {
+  const missing = required.filter((k) => !process.env[k]);
+  if (missing.length === 0) return;
+  const msg = `Missing required environment variables: ${missing.join(', ')}`;
+  if (process.env.NODE_ENV === 'production') {
+    // fail fast in production so deploy logs show the issue
+    throw new Error(msg);
+  } else {
+    // helpful dev-time warning
+    // eslint-disable-next-line no-console
+    console.warn('[env check]', msg);
+  }
+}
+
+ensureEnv([
+  'GOOGLE_CLIENT_ID',
+  'GOOGLE_CLIENT_SECRET',
+  'NEXTAUTH_URL',
+  'NEXTAUTH_SECRET',
+]);
+
 // Google-only auth with Prisma adapter
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prisma),
