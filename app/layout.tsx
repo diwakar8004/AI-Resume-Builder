@@ -30,6 +30,8 @@ const playfair = Playfair_Display({
   display: "swap",
 });
 
+const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://buildresumewithai.vercel.app';
+
 export const metadata: Metadata = {
   title: {
     default: "ResumeAI — Build Your Dream Resume with AI",
@@ -48,10 +50,11 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "ResumeAI" }],
   creator: "ResumeAI",
+
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: process.env.NEXT_PUBLIC_APP_URL,
+    url: appUrl,
     title: "ResumeAI — Build Your Dream Resume with AI",
     description:
       "Create stunning, ATS-optimized resumes, CVs, cover letters, and portfolios in minutes.",

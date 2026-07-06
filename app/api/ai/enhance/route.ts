@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
+import { z } from 'zod';
 
 function getOpenAIClient() {
   const apiKey = process.env.OPENAI_API_KEY;
@@ -9,14 +10,17 @@ function getOpenAIClient() {
   return new OpenAI({ apiKey });
 }
 
+const enhanceRequestSchema = z.object({
+  text: z.string().min(1).max(5000),
+  type: z.enum(['bullet', 'ats']).optional().default('bullet'),
+  tone: z.enum(['Professional', 'Confident', 'Friendly', 'Concise']).optional().default('Professional'),
+  jobTitle: z.string().max(200).optional().default(''),
+});
+
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
-    const { text, type, tone = 'Professional', jobTitle = '' } = body;
-
-    if (!text) {
-      return NextResponse.json({ error: 'text is required' }, { status: 400 });
-    }
+    const body = enhanceRequestSchema.parse(await req.json());
+    const { text, type, tone, jobTitle } = body;
 
     const prompts: Record<string, string> = {
       bullet: `You are an expert resume writer. Rewrite the following experience description as 3–5 powerful bullet points. Use strong action verbs, add quantified metrics where plausible, and use a ${tone} tone.

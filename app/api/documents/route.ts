@@ -1,6 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
 import { auth } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+
+const createDocumentSchema = z.object({
+  title: z.string().max(200).optional().default('Untitled Resume'),
+  template: z.string().max(50).optional().default('classic'),
+  atsScore: z.number().int().min(0).max(100).optional().default(0),
+  status: z.string().max(50).optional().default('draft'),
+  starred: z.boolean().optional().default(false),
+  resumeData: z.any().optional().nullable(),
+});
 
 // GET /api/documents — list all documents for the authenticated user
 export async function GET(_req: NextRequest) {
@@ -23,14 +33,14 @@ export async function POST(req: NextRequest) {
   if (!user || !user.id) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   try {
-    const body = await req.json();
+    const body = createDocumentSchema.parse(await req.json());
     const doc = await prisma.document.create({
       data: {
-        title: body.title || 'Untitled Resume',
-        template: body.template || 'classic',
-        atsScore: body.atsScore ?? 0,
-        status: body.status ?? 'draft',
-        starred: body.starred ?? false,
+        title: body.title,
+        template: body.template,
+        atsScore: body.atsScore,
+        status: body.status,
+        starred: body.starred,
         resumeData: body.resumeData ?? null,
         ownerId: user.id as string,
       },

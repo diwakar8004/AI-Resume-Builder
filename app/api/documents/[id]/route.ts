@@ -1,6 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
 import { auth } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+
+const updateDocumentSchema = z.object({
+  title: z.string().max(200).optional(),
+  template: z.string().max(50).optional(),
+  atsScore: z.number().int().min(0).max(100).optional(),
+  status: z.string().max(50).optional(),
+  starred: z.boolean().optional(),
+  resumeData: z.any().optional(),
+});
 
 // GET /api/documents/[id]
 export async function GET(
@@ -28,7 +38,7 @@ export async function PUT(
     const user = session?.user;
     if (!user || !user.id) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const body = await req.json();
+    const body = updateDocumentSchema.parse(await req.json());
     const existing = await prisma.document.findUnique({ where: { id } });
     if (!existing || existing.ownerId !== (user.id as string)) return NextResponse.json({ error: 'Document not found' }, { status: 404 });
 
@@ -61,7 +71,7 @@ export async function PATCH(
     const user = session?.user;
     if (!user || !user.id) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const body = await req.json();
+    const body = updateDocumentSchema.parse(await req.json());
     const existing = await prisma.document.findUnique({ where: { id } });
     if (!existing || existing.ownerId !== (user.id as string)) return NextResponse.json({ error: 'Document not found' }, { status: 404 });
 

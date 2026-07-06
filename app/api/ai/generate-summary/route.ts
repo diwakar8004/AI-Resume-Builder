@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
+import { z } from 'zod';
 
 function getOpenAIClient() {
   const apiKey = process.env.OPENAI_API_KEY;
@@ -9,10 +10,29 @@ function getOpenAIClient() {
   return new OpenAI({ apiKey });
 }
 
+const summaryRequestSchema = z.object({
+  jobTitle: z.string().max(200).optional().default(''),
+  experience: z
+    .array(
+      z.object({
+        position: z.string().max(100).optional().default(''),
+        company: z.string().max(100).optional().default(''),
+        description: z.string().max(1000).optional().default(''),
+      })
+    )
+    .optional()
+    .default([]),
+  skills: z
+    .array(z.object({ name: z.string().optional().default(''), skills: z.array(z.string()).optional().default([]) }))
+    .optional()
+    .default([]),
+  tone: z.enum(['Professional', 'Casual', 'Confident', 'Friendly']).optional().default('Professional'),
+});
+
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
-    const { jobTitle = '', experience = [], skills = [], tone = 'Professional' } = body;
+    const body = summaryRequestSchema.parse(await req.json());
+    const { jobTitle, experience, skills, tone } = body;
 
     const experienceSummary = (experience as { position: string; company: string; description: string }[])
       .slice(0, 3)
