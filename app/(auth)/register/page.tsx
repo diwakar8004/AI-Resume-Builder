@@ -1,13 +1,17 @@
 'use client';
 
 import { signIn } from 'next-auth/react';
-import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Sparkles } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 export default function RegisterPage() {
-  const searchParams = useSearchParams();
-  const error = searchParams?.get('error');
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    setError(params.get('error'));
+  }, []);
 
   return (
     <div
