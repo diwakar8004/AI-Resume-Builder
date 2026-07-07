@@ -71,7 +71,7 @@ export default function CoverLettersPage() {
 
   useEffect(() => {
     if (session?.user?.name && !form.applicantName) {
-      setForm((current) => ({ ...current, applicantName: session.user.name || '' }));
+      setForm((current) => ({ ...current, applicantName: session?.user?.name || '' }));
     }
   }, [session, form.applicantName]);
 
