@@ -97,7 +97,7 @@ export default function RegisterPage() {
           <div className="grid grid-cols-1 gap-3 mb-6">
             <button
               type="button"
-              onClick={() => signIn('google', { callbackUrl: '/dashboard' })}
+              onClick={() => signIn('google', { callbackUrl: `${window.location.origin}/dashboard` })}
               className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-sm font-medium text-white/80 border border-white/10 bg-white/3 hover:bg-white/6 hover:border-white/15 transition-all duration-200 hover:-translate-y-0.5"
             >
               <svg className="w-4 h-4" viewBox="0 0 24 24">

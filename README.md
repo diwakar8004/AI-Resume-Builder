@@ -29,6 +29,16 @@ To learn more about Next.js, take a look at the following resources:
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
+## Production deployment
+
+This app uses Prisma for database migrations and authentication. Before running a production deployment, make sure the target database has the schema applied with:
+
+```bash
+npm run prisma:deploy
+```
+
+The repo is configured so `npm run build` only generates Prisma client code and builds the app; migrations are deployed separately to avoid long build-time database operations.
+
 ## Deploy on Vercel
 
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.

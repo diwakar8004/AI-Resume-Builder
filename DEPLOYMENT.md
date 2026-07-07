@@ -29,6 +29,13 @@ Vercel notes:
 - After adding environment variables in the Vercel dashboard, trigger a new deployment so the vars are available to the build/runtime.
 - Make sure `NEXTAUTH_URL` matches the public URL (including `https://`).
 - Set `NEXTAUTH_SECRET` to a long random value — NextAuth uses this for session signing.
+- Ensure your production database has the Prisma schema applied before authentication is used. Run:
+
+```bash
+npm run prisma:deploy
+```
+
+  If you prefer not to run migrations during the Vercel build, keep `prisma migrate deploy` out of `build` and deploy schema changes separately.
 
 Local testing tips:
 
