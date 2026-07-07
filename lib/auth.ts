@@ -32,6 +32,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      allowDangerousEmailAccountLinking: true,
     }),
   ],
   pages: {
@@ -42,18 +43,28 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   debug: process.env.NODE_ENV !== 'production',
   callbacks: {
     async jwt({ token, user }) {
-      if (user) token.id = user.id;
+      if (user) {
+        token.id = user.id;
+        token.email = user.email;
+        token.name = user.name;
+        console.log('[JWT Callback] User signed in:', { id: user.id, email: user.email });
+      }
       return token;
     },
     async session({ session, token }) {
       if (session.user && token.id) {
         (session.user as { id?: string }).id = token.id as string;
+        console.log('[Session Callback] Session created:', { userId: token.id, email: session.user.email });
       }
       return session;
     },
     async redirect({ url, baseUrl }) {
       if (url.startsWith(baseUrl)) return url;
       return baseUrl;
+    },
+    async signIn({ user, account, profile }) {
+      console.log('[SignIn Callback] User attempting sign in:', { email: user.email, provider: account?.provider });
+      return true;
     },
   },
 });
