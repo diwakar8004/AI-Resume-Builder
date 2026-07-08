@@ -37,14 +37,34 @@ model Session {
 }
 
 model User {
-  id            String     @id @default(cuid())
+  id            String           @id @default(cuid())
   name          String?
-  email         String?    @unique
+  email         String?          @unique
   emailVerified DateTime?
   image         String?
+  plan          Plan             @default(FREE)
   accounts      Account[]
   documents     Document[]
   sessions      Session[]
+  payments      PaymentHistory[]
+}
+
+model PaymentHistory {
+  id                 String        @id @default(cuid())
+  user               User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId             String
+  plan               Plan
+  amount             Int
+  currency           String
+  provider           String        @default("razorpay")
+  razorpayOrderId    String        @unique
+  razorpayPaymentId  String?
+  razorpaySignature  String?
+  status             PaymentStatus @default(CREATED)
+  receipt            String?
+  notes              String?
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
 }
 
 model VerificationToken {
@@ -67,4 +87,17 @@ model Document {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
   owner      User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+}
+
+enum Plan {
+  FREE
+  PRO
+}
+
+enum PaymentStatus {
+  CREATED
+  PENDING
+  SUCCESS
+  FAILED
+  CANCELLED
 }

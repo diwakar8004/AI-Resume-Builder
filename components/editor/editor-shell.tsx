@@ -74,70 +74,70 @@ export function EditorShell({ documentId, createNew = false, LeftPanel, CenterPa
       <Autosave documentId={documentId} createNew={createNew} />
       {/* ── Top Bar ────────────────────────────────────────────────────────── */}
       <header
-        className="h-14 flex items-center px-4 gap-3 flex-shrink-0 border-b border-white/5"
+        className="h-12 sm:h-14 flex items-center px-2 sm:px-4 gap-2 sm:gap-3 flex-shrink-0 border-b border-white/5 overflow-x-auto"
         style={{ background: 'rgba(13,13,32,0.95)', backdropFilter: 'blur(20px)' }}
       >
         {/* Back */}
         <Link
           href="/dashboard"
-          className="flex items-center gap-1.5 text-sm font-medium text-white/40 hover:text-white transition-colors group"
+          className="hidden sm:flex items-center gap-1.5 text-xs sm:text-sm font-medium text-white/40 hover:text-white transition-colors group flex-shrink-0"
         >
-          <ChevronLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
-          Dashboard
+          <ChevronLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover:-translate-x-0.5 transition-transform" />
+          <span className="hidden md:inline">Dashboard</span>
         </Link>
 
-        <div className="w-px h-5 bg-white/10" />
+        <div className="hidden sm:block w-px h-4 sm:h-5 bg-white/10" />
 
         {/* Document title */}
         <input
           type="text"
           value={documentTitle}
           onChange={(e) => setDocumentTitle(e.target.value)}
-          className="flex-1 max-w-xs text-sm font-semibold text-white bg-transparent border-none outline-none placeholder-white/30 focus:bg-white/5 px-2 py-1 rounded-lg transition-all"
-          placeholder="Untitled Resume"
+          className="flex-1 max-w-xs text-xs sm:text-sm font-semibold text-white bg-transparent border-none outline-none placeholder-white/30 focus:bg-white/5 px-2 py-1 rounded-lg transition-all"
+          placeholder="Resume"
         />
 
-        {/* Status */}
-        <div className="flex items-center gap-1.5 text-xs ml-auto">
+        {/* Status - hide on very small screens */}
+        <div className="hidden sm:flex items-center gap-1.5 text-xs ml-auto flex-shrink-0">
           {isSaving ? (
-            <><Loader2 className="w-3.5 h-3.5 text-indigo-400 animate-spin" /><span className="text-white/40">Saving…</span></>
+            <><Loader2 className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-indigo-400 animate-spin" /><span className="hidden md:inline text-white/40">Saving…</span></>
           ) : savedOk ? (
-            <><CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /><span className="text-white/40">Saved</span></>
+            <><CheckCircle2 className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-emerald-400" /><span className="hidden md:inline text-white/40">Saved</span></>
           ) : isDirty ? (
-            <><AlertCircle className="w-3.5 h-3.5 text-amber-400" /><span className="text-white/40">Unsaved changes</span></>
+            <><AlertCircle className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-amber-400" /><span className="hidden md:inline text-white/40">Unsaved</span></>
           ) : (
-            <><CheckCircle2 className="w-3.5 h-3.5 text-white/20" /><span className="text-white/25">Up to date</span></>
+            <><CheckCircle2 className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-white/20" /><span className="hidden md:inline text-white/25">Up to date</span></>
           )}
         </div>
 
-        {/* Actions */}
-        <div className="flex items-center gap-2">
+        {/* Actions - responsive buttons */}
+        <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
           {/* AI Toggle */}
           <button
             onClick={toggleAIPanel}
             className={cn(
-              'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200',
+              'hidden sm:flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs font-semibold transition-all duration-200',
               isAIPanelOpen
                 ? 'text-white'
                 : 'text-white/50 hover:text-white hover:bg-white/8 border border-white/10'
             )}
             style={isAIPanelOpen ? { background: 'linear-gradient(135deg, #4F46E5, #7C3AED)', boxShadow: '0 4px 12px rgba(79,70,229,0.3)' } : {}}
           >
-            <Sparkles className="w-3.5 h-3.5" />
-            AI
+            <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+            <span className="hidden md:inline">AI</span>
           </button>
 
           {/* Customize */}
           <button 
             onClick={() => setIsStyleModalOpen(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-white/50 hover:text-white border border-white/10 hover:bg-white/8 transition-all duration-200">
-            <Palette className="w-3.5 h-3.5" />
-            Style
+            className="hidden sm:flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs font-medium text-white/50 hover:text-white border border-white/10 hover:bg-white/8 transition-all duration-200">
+            <Palette className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+            <span className="hidden md:inline">Style</span>
           </button>
 
           {/* History */}
-          <button className="p-1.5 rounded-lg text-white/40 hover:text-white hover:bg-white/8 border border-white/10 transition-all duration-200">
-            <History className="w-4 h-4" />
+          <button className="p-1 sm:p-1.5 rounded-lg text-white/40 hover:text-white hover:bg-white/8 border border-white/10 transition-all duration-200">
+            <History className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           </button>
 
           {/* Save */}
@@ -145,61 +145,61 @@ export function EditorShell({ documentId, createNew = false, LeftPanel, CenterPa
             onClick={handleSave}
             disabled={!isDirty || isSaving}
             className={cn(
-              'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all duration-200',
+              'hidden sm:flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs font-bold transition-all duration-200',
               isDirty && !isSaving
                 ? 'text-white hover:-translate-y-0.5'
                 : 'text-white/30 cursor-not-allowed opacity-50'
             )}
             style={isDirty && !isSaving ? { background: 'linear-gradient(135deg, #4F46E5, #7C3AED)', boxShadow: '0 4px 12px rgba(79,70,229,0.3)' } : { background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.08)' }}
           >
-            {isSaving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
-            Save
+            {isSaving ? <Loader2 className="w-3 h-3 sm:w-3.5 sm:h-3.5 animate-spin" /> : <Save className="w-3 h-3 sm:w-3.5 sm:h-3.5" />}
+            <span className="hidden md:inline">Save</span>
           </button>
 
-          {/* Export */}
+          {/* Export - mobile friendly */}
           <button
             onClick={handleExport}
             disabled={isExporting}
             className={cn(
-              'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all duration-200',
+              'flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs font-bold transition-all duration-200',
               isExporting 
                 ? 'text-white/50 cursor-not-allowed opacity-50'
                 : 'text-white border border-white/10 bg-white/5 hover:bg-white/10'
             )}
           >
             {isExporting ? (
-              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+              <Loader2 className="w-3 h-3 sm:w-3.5 sm:h-3.5 animate-spin" />
             ) : (
-              <Download className="w-3.5 h-3.5" />
+              <Download className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
             )}
-            {isExporting ? 'Exporting...' : 'Export'}
+            <span className="hidden md:inline">{isExporting ? 'Exporting...' : 'Export'}</span>
           </button>
 
-          <button className="p-1.5 rounded-lg text-white/40 hover:text-white hover:bg-white/8 transition-colors">
-            <MoreHorizontal className="w-4 h-4" />
+          <button className="hidden sm:block p-1 sm:p-1.5 rounded-lg text-white/40 hover:text-white hover:bg-white/8 transition-colors">
+            <MoreHorizontal className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           </button>
         </div>
       </header>
 
-      {/* ── Three Panels ────────────────────────────────────────────────────── */}
-      <div className="flex flex-1 overflow-hidden">
-        {/* LEFT — Form panel */}
+      {/* ── Three Panels (responsive layout) ────────────────────────────────── */}
+      <div className="flex flex-1 overflow-hidden flex-col md:flex-row">
+        {/* LEFT — Form panel (hidden on mobile, shown on desktop) */}
         <aside
-          className="w-80 flex-shrink-0 flex flex-col overflow-hidden border-r border-white/5"
+          className="hidden md:flex w-full md:w-80 flex-shrink-0 flex-col overflow-hidden border-r border-white/5"
           style={{ background: '#0D0D20' }}
         >
           {LeftPanel}
         </aside>
 
         {/* CENTER — Live preview */}
-        <main className="flex-1 overflow-auto flex items-start justify-center py-8 px-4" style={{ background: 'linear-gradient(180deg, #0A0A18 0%, #0C0C1E 100%)' }}>
+        <main className="flex-1 overflow-auto flex items-start justify-center py-4 sm:py-6 md:py-8 px-2 sm:px-4" style={{ background: 'linear-gradient(180deg, #0A0A18 0%, #0C0C1E 100%)' }}>
           {CenterPanel}
         </main>
 
-        {/* RIGHT — AI panel (conditionally shown) */}
+        {/* RIGHT — AI panel (hidden on mobile, conditionally shown on desktop) */}
         {isAIPanelOpen && (
           <aside
-            className="w-80 flex-shrink-0 border-l border-white/5 flex flex-col overflow-hidden"
+            className="hidden md:flex w-full md:w-80 flex-shrink-0 border-l border-white/5 flex-col overflow-hidden"
             style={{ background: '#0D0D20' }}
           >
             {RightPanel}

@@ -56,11 +56,11 @@ export function HeroSection() {
         }}
       />
 
-      {/* Floating badges */}
+      {/* Floating badges - only show on larger screens */}
       {floatingBadges.map((badge, i) => (
         <div
           key={i}
-          className="absolute hidden lg:flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-semibold text-white border border-white/10 backdrop-blur-sm"
+          className="absolute hidden 2xl:flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-semibold text-white border border-white/10 backdrop-blur-sm"
           style={{
             left: badge.x,
             top: badge.y,
@@ -77,17 +77,18 @@ export function HeroSection() {
       ))}
 
       {/* Main content */}
-      <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center pt-20">
+      <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center pt-16 sm:pt-20">
         {/* Badge */}
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold text-indigo-300 border border-indigo-500/30 bg-indigo-500/10 mb-8">
-          <Sparkles className="w-3.5 h-3.5" />
-          <span>AI-Powered Resume Builder — 2025</span>
-          <ArrowRight className="w-3 h-3" />
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs font-semibold text-indigo-300 border border-indigo-500/30 bg-indigo-500/10 mb-6 sm:mb-8">
+          <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0" />
+          <span className="hidden sm:inline">AI-Powered Resume Builder — 2025</span>
+          <span className="sm:hidden">AI Resume Builder — 2025</span>
+          <ArrowRight className="w-2.5 h-2.5 sm:w-3 sm:h-3 flex-shrink-0" />
         </div>
 
         {/* Headline */}
         <h1
-          className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-black text-white leading-[1.05] tracking-tight mb-6"
+          className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black text-white leading-[1.05] tracking-tight mb-4 sm:mb-6"
           style={{ fontFamily: 'Outfit, sans-serif' }}
         >
           Build Resumes That{' '}
@@ -104,28 +105,28 @@ export function HeroSection() {
         </h1>
 
         {/* Subtitle */}
-        <p className="text-lg sm:text-xl text-white/60 max-w-2xl mx-auto mb-10 leading-relaxed">
+        <p className="text-base sm:text-lg md:text-xl text-white/60 max-w-2xl mx-auto mb-8 sm:mb-10 leading-relaxed">
           AI writes your bullet points. 30+ ATS-optimized templates make you stand out.
           One-click PDF export gets you into interviews faster.
         </p>
 
         {/* CTA Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center mb-12 sm:mb-16">
           <Link
             href="/dashboard"
-            className="group flex items-center gap-3 px-8 py-4 text-base font-bold text-white rounded-2xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
+            className="w-full sm:w-auto group flex items-center justify-center gap-2 sm:gap-3 px-6 sm:px-8 py-3 sm:py-4 text-sm sm:text-base font-bold text-white rounded-xl sm:rounded-2xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
             style={{
               background: 'linear-gradient(135deg, #4F46E5, #7C3AED)',
               boxShadow: '0 8px 32px rgba(79,70,229,0.4)',
             }}
           >
-            <Sparkles className="w-5 h-5" />
+            <Sparkles className="w-4 h-4 sm:w-5 sm:h-5" />
             Start Building Free
-            <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+            <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 transition-transform group-hover:translate-x-1" />
           </Link>
           <Link
             href="#templates"
-            className="flex items-center gap-3 px-8 py-4 text-base font-semibold text-white/80 rounded-2xl border border-white/10 hover:border-white/20 hover:bg-white/5 transition-all duration-300 hover:-translate-y-1"
+            className="w-full sm:w-auto flex items-center justify-center gap-3 px-6 sm:px-8 py-3 sm:py-4 text-sm sm:text-base font-semibold text-white/80 rounded-xl sm:rounded-2xl border border-white/10 hover:border-white/20 hover:bg-white/5 transition-all duration-300 hover:-translate-y-1"
           >
             View Templates
           </Link>

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { auth } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+import { premiumTemplateGuard } from '@/lib/payment';
 
 const updateDocumentSchema = z.object({
   title: z.string().max(200).optional(),
@@ -40,6 +41,7 @@ export async function PUT(
     if (!user || !user.id) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const body = updateDocumentSchema.parse(await req.json());
+    premiumTemplateGuard(session.user?.plan as string | undefined, body.template);
     const existing = await prisma.document.findUnique({ where: { id } });
     if (!existing || existing.ownerId !== (user.id as string)) return NextResponse.json({ error: 'Document not found' }, { status: 404 });
 
@@ -73,6 +75,7 @@ export async function PATCH(
     if (!user || !user.id) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const body = updateDocumentSchema.parse(await req.json());
+    premiumTemplateGuard(session.user?.plan as string | undefined, body.template);
     const existing = await prisma.document.findUnique({ where: { id } });
     if (!existing || existing.ownerId !== (user.id as string)) return NextResponse.json({ error: 'Document not found' }, { status: 404 });
 

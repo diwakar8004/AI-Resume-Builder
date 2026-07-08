@@ -74,14 +74,23 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         token.id = user.id;
         token.email = user.email;
         token.name = user.name;
-        console.log('[JWT Callback] User signed in:', { id: user.id, email: user.email });
+        const userPlan = (user as { plan?: string } | undefined)?.plan;
+        token.plan = userPlan ?? token.plan ?? 'FREE';
+        console.log('[JWT Callback] User signed in:', { id: user.id, email: user.email, plan: token.plan });
       }
       return token;
     },
     async session({ session, token }) {
       if (session.user && token.id) {
-        (session.user as { id?: string }).id = token.id as string;
-        console.log('[Session Callback] Session created:', { userId: token.id, email: session.user.email });
+        const dbUser = await prisma.user.findUnique({ where: { id: token.id as string } });
+        (session.user as { id?: string; plan?: string }).id = token.id as string;
+        const planFromToken = typeof token.plan === 'string' ? token.plan : 'FREE';
+        (session.user as { id?: string; plan?: string }).plan = dbUser?.plan ?? planFromToken;
+        console.log('[Session Callback] Session created:', {
+          userId: token.id,
+          email: session.user.email,
+          plan: (session.user as { plan?: string }).plan,
+        });
       }
       return session;
     },

@@ -20,11 +20,25 @@ type NotificationSettings = {
   aiTips: boolean;
 };
 
+type PaymentHistoryEntry = {
+  id: string;
+  plan: 'PRO' | 'FREE';
+  amount: number;
+  currency: string;
+  razorpayPaymentId?: string | null;
+  status: string;
+  receipt?: string | null;
+  notes?: string | null;
+  createdAt: string;
+};
+
 export default function SettingsPage() {
   const { data: session } = useSession();
   const { theme, setTheme } = useTheme();
   const [isLoading, setIsLoading] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [payments, setPayments] = useState<PaymentHistoryEntry[]>([]);
+  const [paymentsLoading, setPaymentsLoading] = useState(true);
   const [profileImage, setProfileImage] = useState(session?.user?.image || '');
   const [values, setValues] = useState({
     name: session?.user?.name || '',
@@ -51,6 +65,24 @@ export default function SettingsPage() {
     }
   }, [session]);
 
+  useEffect(() => {
+    async function loadHistory() {
+      setPaymentsLoading(true);
+      try {
+        const response = await fetch('/api/payments/history');
+        if (!response.ok) throw new Error('Unable to load payment history');
+        const data = await response.json();
+        setPayments(data.payments ?? []);
+      } catch (err) {
+        console.error('[Payment History] Failed to load', err);
+      } finally {
+        setPaymentsLoading(false);
+      }
+    }
+
+    loadHistory();
+  }, []);
+
   const handleSave = async (event: React.FormEvent) => {
     event.preventDefault();
     setIsLoading(true);
@@ -72,6 +104,7 @@ export default function SettingsPage() {
   };
 
   const themeOptions = ['system', 'light', 'dark'] as const;
+  const currentPlan = session?.user?.plan === 'PRO' ? 'Pro Plan' : 'Free Starter';
 
   return (
     <div className="min-h-screen px-4 py-10 sm:px-6 lg:px-10">
@@ -92,7 +125,7 @@ export default function SettingsPage() {
               </div>
               <div>
                 <p className="text-sm text-white/50">Plan</p>
-                <p className="text-base font-semibold text-white">Free Starter</p>
+                <p className="text-base font-semibold text-white">{currentPlan}</p>
               </div>
             </div>
           </div>
@@ -293,19 +326,22 @@ export default function SettingsPage() {
               <div className="mt-8 space-y-4 rounded-3xl border border-white/10 bg-black/20 p-5">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-semibold text-white">Free Starter</p>
-                    <p className="text-xs text-white/50">Monthly plan</p>
+                    <p className="text-sm font-semibold text-white">{currentPlan}</p>
+                    <p className="text-xs text-white/50">{session?.user?.plan === 'PRO' ? 'Active subscription' : 'Monthly plan'}</p>
                   </div>
-                  <span className="rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-200">Current</span>
+                  <span className="rounded-full bg-indigo-500/10 px-3 py-1 text-xs font-semibold text-indigo-200">
+                    {session?.user?.plan === 'PRO' ? 'PRO' : 'Free'}
+                  </span>
                 </div>
                 <div>
-                    <p className="text-sm text-white/60">You&apos;re on the starter plan with limited AI suggestions, resumes, and cover letters.</p>
+                    <p className="text-sm text-white/60">{session?.user?.plan === 'PRO' ? 'You have access to premium templates, AI features, and history.' : 'You\'re on the starter plan with limited AI suggestions, resumes, and cover letters.'}</p>
                 </div>
                 <button
                   type="button"
+                  onClick={() => window.location.href = '/pricing'}
                   className="mt-3 w-full rounded-3xl bg-gradient-to-r from-indigo-500 to-violet-500 px-4 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5"
                 >
-                  Upgrade to Premium
+                  {session?.user?.plan === 'PRO' ? 'Manage subscription' : 'Upgrade to Pro'}
                 </button>
               </div>
             </section>
@@ -334,6 +370,44 @@ export default function SettingsPage() {
                     </div>
                   </div>
                 ))}
+              </div>
+            </section>
+
+            <section className="rounded-[2rem] border border-white/10 bg-white/5 p-6 shadow-[0_30px_80px_rgba(0,0,0,0.22)]">
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <p className="text-sm font-semibold text-white">Payment history</p>
+                  <p className="mt-2 text-sm text-white/50">Review recent Razorpay charges and subscription activity.</p>
+                </div>
+                <CreditCard className="h-5 w-5 text-indigo-300" />
+              </div>
+              <div className="mt-6 space-y-3">
+                {paymentsLoading ? (
+                  <p className="text-sm text-white/60">Loading payment history…</p>
+                ) : payments.length === 0 ? (
+                  <p className="text-sm text-white/60">No payments found yet. Start a Pro plan to view your history.</p>
+                ) : (
+                  <div className="space-y-3">
+                    {payments.map((payment) => (
+                      <div key={payment.id} className="rounded-3xl border border-white/10 bg-black/20 p-4">
+                        <div className="flex items-center justify-between gap-4">
+                          <div>
+                            <p className="text-sm font-semibold text-white">{payment.plan} payment</p>
+                            <p className="mt-1 text-xs text-white/50">{new Date(payment.createdAt).toLocaleString()}</p>
+                          </div>
+                          <span className={`rounded-full px-3 py-1 text-xs font-semibold ${payment.status === 'SUCCESS' ? 'bg-emerald-500/10 text-emerald-200' : 'bg-rose-500/10 text-rose-200'}`}>
+                            {payment.status}
+                          </span>
+                        </div>
+                        <div className="mt-3 space-y-1 text-sm text-white/60">
+                          <p>Amount: ₹{(payment.amount / 100).toFixed(0)} {payment.currency}</p>
+                          {payment.razorpayPaymentId ? <p>Payment ID: {payment.razorpayPaymentId}</p> : null}
+                          {payment.notes ? <p>Notes: {payment.notes}</p> : null}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </section>
 

@@ -1,3 +1,4 @@
+import prisma from '@/lib/prisma';
 import { auth } from '@/lib/auth';
 
 export async function GET() {
@@ -11,14 +12,18 @@ export async function GET() {
       );
     }
 
+    const userId = (session.user as { id?: string }).id;
+    const user = userId ? await prisma.user.findUnique({ where: { id: userId } }) : null;
+
     return Response.json(
       {
         authenticated: true,
         user: {
-          id: (session.user as { id?: string }).id,
+          id: userId,
           email: session.user?.email,
           name: session.user?.name,
           image: session.user?.image,
+          plan: user?.plan ?? (session.user as { plan?: string }).plan ?? 'FREE',
         },
         expiresAt: session.expires,
       },

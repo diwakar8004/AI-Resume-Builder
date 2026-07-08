@@ -52,58 +52,59 @@ function LoginContent() {
 
   return (
     <div
-      className="min-h-screen flex"
+      className="min-h-screen flex flex-col lg:flex-row"
       style={{ background: 'linear-gradient(135deg, #0A0A18 0%, #0F0F2D 50%, #0A0A18 100%)' }}
     >
-      <div className="hidden lg:flex flex-col justify-between w-1/2 p-12 relative overflow-hidden">
+      {/* Left side - hidden on mobile */}
+      <div className="hidden lg:flex flex-col justify-between w-full lg:w-1/2 p-6 sm:p-8 lg:p-12 relative overflow-hidden">
         <div
-          className="absolute top-1/3 left-1/4 w-80 h-80 rounded-full blur-3xl opacity-20"
+          className="absolute top-1/3 left-1/4 w-64 h-64 sm:w-80 sm:h-80 rounded-full blur-3xl opacity-20"
           style={{ background: 'radial-gradient(circle, #4F46E5, transparent)' }}
         />
         <div
-          className="absolute bottom-1/4 right-1/4 w-64 h-64 rounded-full blur-3xl opacity-15"
+          className="absolute bottom-1/4 right-1/4 w-48 h-48 sm:w-64 sm:h-64 rounded-full blur-3xl opacity-15"
           style={{ background: 'radial-gradient(circle, #7C3AED, transparent)' }}
         />
 
         <Link href="/" className="flex items-center gap-2 relative">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg">
-            <Sparkles className="w-5 h-5 text-white" />
+          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg">
+            <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
           </div>
-          <span className="text-2xl font-bold text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>
+          <span className="text-lg sm:text-2xl font-bold text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>
             Resume<span className="text-indigo-400">AI</span>
           </span>
         </Link>
 
         <div className="relative">
           <div
-            className="absolute inset-0 -m-6 rounded-2xl blur opacity-20"
+            className="absolute inset-0 -m-4 sm:-m-6 rounded-lg sm:rounded-2xl blur opacity-20"
             style={{ background: 'linear-gradient(135deg, #4F46E5, #7C3AED)' }}
           />
-          <div className="relative p-6 rounded-2xl border border-white/10 bg-white/3">
-            <p className="text-xl font-semibold text-white mb-4 leading-relaxed">
+          <div className="relative p-4 sm:p-6 rounded-lg sm:rounded-2xl border border-white/10 bg-white/3">
+            <p className="text-base sm:text-xl font-semibold text-white mb-3 sm:mb-4 leading-relaxed">
               &quot;ResumeAI helped me land interviews at Google, Meta, and Stripe. The AI bullet
               rewriter is absolutely incredible.&quot;
             </p>
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-white text-sm font-bold">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-white text-xs sm:text-sm font-bold flex-shrink-0">
                 PS
               </div>
               <div>
-                <p className="text-sm font-semibold text-white">Priya Sharma</p>
+                <p className="text-xs sm:text-sm font-semibold text-white">Priya Sharma</p>
                 <p className="text-xs text-white/50">Software Engineer at Google</p>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-3 gap-4 relative">
+        <div className="grid grid-cols-3 gap-3 sm:gap-4 relative">
           {[
             { value: '2M+', label: 'Users' },
             { value: '94%', label: 'Interview Rate' },
             { value: '4.9★', label: 'Rating' },
           ].map((stat) => (
-            <div key={stat.label} className="text-center p-4 rounded-xl bg-white/3 border border-white/5">
-              <p className="text-2xl font-black text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>
+            <div key={stat.label} className="text-center p-3 sm:p-4 rounded-lg sm:rounded-xl bg-white/3 border border-white/5">
+              <p className="text-xl sm:text-2xl font-black text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>
                 {stat.value}
               </p>
               <p className="text-xs text-white/40 mt-0.5">{stat.label}</p>
@@ -112,11 +113,12 @@ function LoginContent() {
         </div>
       </div>
 
-      <div className="flex flex-col justify-center w-full lg:w-1/2 px-6 py-12">
+      {/* Right side - form */}
+      <div className="flex flex-col justify-center w-full lg:w-1/2 px-4 sm:px-6 py-8 sm:py-12 lg:py-0">
         <div className="w-full max-w-md mx-auto">
-          <Link href="/" className="flex items-center gap-2 mb-10 lg:hidden">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
-              <Sparkles className="w-4 h-4 text-white" />
+          <Link href="/" className="flex items-center gap-2 mb-6 sm:mb-8 lg:hidden">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+              <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
             </div>
             <span className="text-xl font-bold text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>
               Resume<span className="text-indigo-400">AI</span>

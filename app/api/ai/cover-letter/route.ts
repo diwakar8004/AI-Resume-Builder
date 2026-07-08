@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
 import { z } from 'zod';
 import { auth } from '@/lib/auth';
+import { requireProPlan } from '@/lib/payment';
 
 function getOpenAIClient() {
   const apiKey = process.env.OPENAI_API_KEY;
@@ -27,6 +28,11 @@ export async function POST(req: NextRequest) {
     }
 
     const body = coverLetterSchema.parse(await req.json());
+    try {
+      requireProPlan(session.user?.plan);
+    } catch (error) {
+      return NextResponse.json({ error: error instanceof Error ? error.message : 'Pro subscription required' }, { status: 403 });
+    }
     const { company, role, jobDescription, tone, applicantName } = body;
 
     const prompt = `You are a highly skilled cover letter writer. Draft a concise and persuasive cover letter for a candidate named ${applicantName} applying for the role of ${role} at ${company}. The letter should be tailored to the job description below, highlight relevant experience and impact, use a ${tone.toLowerCase()} tone, and end with a confident call-to-action.

@@ -79,17 +79,17 @@ export function PricingSection() {
   return (
     <section
       id="pricing"
-      className="py-24 lg:py-32"
+      className="py-16 sm:py-24 lg:py-32 px-4 sm:px-6"
       style={{ background: 'linear-gradient(180deg, #0A0A18 0%, #0D0D20 100%)' }}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold text-amber-300 border border-amber-500/30 bg-amber-500/10 mb-6">
-            <Zap className="w-3.5 h-3.5" />
+      <div className="max-w-7xl mx-auto">
+        <div className="text-center mb-10 sm:mb-12">
+          <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs font-semibold text-amber-300 border border-amber-500/30 bg-amber-500/10 mb-4 sm:mb-6">
+            <Zap className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0" />
             <span>Simple, Transparent Pricing</span>
           </div>
           <h2
-            className="text-4xl sm:text-5xl font-black text-white mb-4"
+            className="text-3xl sm:text-4xl md:text-5xl font-black text-white mb-3 sm:mb-4"
             style={{ fontFamily: 'Outfit, sans-serif' }}
           >
             Invest in Your{' '}
@@ -104,15 +104,15 @@ export function PricingSection() {
               Career
             </span>
           </h2>
-          <p className="text-white/50 max-w-xl mx-auto mb-8">
+          <p className="text-sm sm:text-base text-white/50 max-w-xl mx-auto mb-6 sm:mb-8">
             Start free. Upgrade when you&apos;re ready. Cancel anytime.
           </p>
 
           {/* Billing toggle */}
-          <div className="inline-flex items-center gap-4 p-1 rounded-full bg-white/5 border border-white/8">
+          <div className="inline-flex flex-col sm:flex-row items-center gap-2 sm:gap-0 p-1 rounded-full bg-white/5 border border-white/8">
             <button
               onClick={() => setIsAnnual(false)}
-              className={`px-5 py-2 rounded-full text-sm font-medium transition-all ${
+              className={`w-full sm:w-auto px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-medium transition-all ${
                 !isAnnual ? 'bg-white text-gray-900 shadow' : 'text-white/50 hover:text-white'
               }`}
             >
@@ -120,7 +120,7 @@ export function PricingSection() {
             </button>
             <button
               onClick={() => setIsAnnual(true)}
-              className={`px-5 py-2 rounded-full text-sm font-medium transition-all flex items-center gap-2 ${
+              className={`w-full sm:w-auto px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-medium transition-all flex items-center justify-center gap-2 ${
                 isAnnual ? 'bg-white text-gray-900 shadow' : 'text-white/50 hover:text-white'
               }`}
             >
@@ -133,12 +133,12 @@ export function PricingSection() {
         </div>
 
         {/* Pricing cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
           {plans.map((plan, i) => (
             <div
               key={i}
-              className={`relative rounded-2xl p-6 border transition-all duration-300 hover:-translate-y-1 ${
-                plan.badge === 'Most Popular' ? 'shadow-2xl' : ''
+              className={`relative rounded-lg sm:rounded-xl lg:rounded-2xl p-4 sm:p-5 lg:p-6 border transition-all duration-300 hover:-translate-y-0.5 sm:hover:-translate-y-1 ${
+                plan.badge === 'Most Popular' ? 'shadow-xl sm:shadow-2xl' : ''
               }`}
               style={{
                 background:
@@ -153,22 +153,22 @@ export function PricingSection() {
               {/* Badge */}
               {plan.badge && (
                 <div
-                  className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-bold text-white"
+                  className="absolute -top-2 sm:-top-3 left-1/2 -translate-x-1/2 px-3 sm:px-4 py-0.5 sm:py-1 rounded-full text-xs font-bold text-white"
                   style={{ background: `linear-gradient(135deg, ${plan.color}, ${plan.color}CC)` }}
                 >
                   {plan.badge}
                 </div>
               )}
 
-              <div className="mb-6">
-                <h3 className="text-base font-bold text-white mb-1">{plan.name}</h3>
-                <p className="text-xs text-white/40 mb-4">{plan.description}</p>
+              <div className="mb-4 sm:mb-6">
+                <h3 className="text-sm sm:text-base font-bold text-white mb-0.5 sm:mb-1">{plan.name}</h3>
+                <p className="text-xs text-white/40 mb-3 sm:mb-4">{plan.description}</p>
                 <div className="flex items-end gap-1">
-                  <span className="text-4xl font-black text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                  <span className="text-3xl sm:text-4xl font-black text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>
                     ${isAnnual ? plan.price.annual : plan.price.monthly}
                   </span>
                   {plan.price.monthly > 0 && (
-                    <span className="text-sm text-white/40 mb-1">/mo</span>
+                    <span className="text-xs text-white/40 mb-0.5">/mo</span>
                   )}
                 </div>
                 {isAnnual && plan.price.monthly > 0 && (
@@ -180,7 +180,7 @@ export function PricingSection() {
 
               <Link
                 href={plan.ctaHref}
-                className="flex items-center justify-center gap-2 w-full py-3 rounded-xl text-sm font-bold mb-6 transition-all duration-200 hover:-translate-y-0.5"
+                className="flex items-center justify-center gap-1.5 sm:gap-2 w-full py-2.5 sm:py-3 rounded-lg sm:rounded-xl text-xs sm:text-sm font-bold mb-4 sm:mb-6 transition-all duration-200 hover:-translate-y-0.5"
                 style={
                   plan.badge === 'Most Popular'
                     ? {
@@ -195,9 +195,9 @@ export function PricingSection() {
                       }
                 }
               >
-                {plan.badge === 'Most Popular' && <Sparkles className="w-3.5 h-3.5" />}
+                {plan.badge === 'Most Popular' && <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0" />}
                 {plan.cta}
-                <ArrowRight className="w-3.5 h-3.5" />
+                <ArrowRight className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0" />
               </Link>
 
               <div className="space-y-2.5">

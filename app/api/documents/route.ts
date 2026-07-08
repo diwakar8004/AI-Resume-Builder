@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { auth } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+import { premiumTemplateGuard } from '@/lib/payment';
 
 const createDocumentSchema = z.object({
   title: z.string().max(200).optional().default('Untitled Resume'),
@@ -34,6 +35,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = createDocumentSchema.parse(await req.json());
+    premiumTemplateGuard(session.user?.plan as string | undefined, body.template);
     const doc = await prisma.document.create({
       data: {
         title: body.title,

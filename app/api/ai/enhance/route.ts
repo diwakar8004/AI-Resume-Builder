@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
 import { z } from 'zod';
 import { auth } from '@/lib/auth';
+import { requireProPlan } from '@/lib/payment';
 
 function getOpenAIClient() {
   const apiKey = process.env.OPENAI_API_KEY;
@@ -27,6 +28,11 @@ export async function POST(req: NextRequest) {
 
     const body = enhanceRequestSchema.parse(await req.json());
     const { text, type, tone, jobTitle } = body;
+    try {
+      requireProPlan(session.user?.plan);
+    } catch (error) {
+      return NextResponse.json({ error: error instanceof Error ? error.message : 'Pro subscription required' }, { status: 403 });
+    }
 
     const prompts: Record<string, string> = {
       bullet: `You are an expert resume writer. Rewrite the following experience description as 3–5 powerful bullet points. Use strong action verbs, add quantified metrics where plausible, and use a ${tone} tone.

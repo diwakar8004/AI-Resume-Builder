@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
 import { z } from 'zod';
 import { auth } from '@/lib/auth';
+import { requireProPlan } from '@/lib/payment';
 
 function getOpenAIClient() {
   const apiKey = process.env.OPENAI_API_KEY;
@@ -38,6 +39,11 @@ export async function POST(req: NextRequest) {
     }
 
     const body = summaryRequestSchema.parse(await req.json());
+    try {
+      requireProPlan(session.user?.plan);
+    } catch (error) {
+      return NextResponse.json({ error: error instanceof Error ? error.message : 'Pro subscription required' }, { status: 403 });
+    }
     const { jobTitle, experience, skills, tone } = body;
 
     const experienceSummary = (experience as { position: string; company: string; description: string }[])
