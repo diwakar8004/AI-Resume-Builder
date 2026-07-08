@@ -19,20 +19,23 @@ import { cn } from '@/lib/utils';
 import { exportResumeToPDF } from '@/lib/pdf-export';
 import { toast } from 'sonner';
 import { Autosave } from '@/components/editor/autosave';
+import { StyleModal } from '@/components/editor/style-modal';
 
 
 interface EditorShellProps {
-  documentId: string;
+  documentId?: string;
+  createNew?: boolean;
   LeftPanel: React.ReactNode;
   CenterPanel: React.ReactNode;
   RightPanel: React.ReactNode;
 }
 
-export function EditorShell({ documentId, LeftPanel, CenterPanel, RightPanel }: EditorShellProps) {
+export function EditorShell({ documentId, createNew = false, LeftPanel, CenterPanel, RightPanel }: EditorShellProps) {
   const { isDirty, documentTitle, setDocumentTitle, isAIPanelOpen, toggleAIPanel, markClean } = useResumeStore();
   const [isSaving, setIsSaving] = useState(false);
   const [savedOk, setSavedOk] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
+  const [isStyleModalOpen, setIsStyleModalOpen] = useState(false);
 
   const handleSave = async () => {
     setIsSaving(true);
@@ -50,7 +53,7 @@ export function EditorShell({ documentId, LeftPanel, CenterPanel, RightPanel }: 
       await exportResumeToPDF({ 
         filename: `${filename}.pdf`,
         margin: 5,
-        scale: 2,
+        scale: 3,
       });
       toast.success('Resume exported successfully!');
     } catch (error) {
@@ -68,7 +71,7 @@ export function EditorShell({ documentId, LeftPanel, CenterPanel, RightPanel }: 
     >
       {/* Autosave component handles initial load and autosave wiring
           render it once per editor instance */}
-      <Autosave documentId={documentId} />
+      <Autosave documentId={documentId} createNew={createNew} />
       {/* ── Top Bar ────────────────────────────────────────────────────────── */}
       <header
         className="h-14 flex items-center px-4 gap-3 flex-shrink-0 border-b border-white/5"
@@ -125,7 +128,9 @@ export function EditorShell({ documentId, LeftPanel, CenterPanel, RightPanel }: 
           </button>
 
           {/* Customize */}
-          <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-white/50 hover:text-white border border-white/10 hover:bg-white/8 transition-all duration-200">
+          <button 
+            onClick={() => setIsStyleModalOpen(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-white/50 hover:text-white border border-white/10 hover:bg-white/8 transition-all duration-200">
             <Palette className="w-3.5 h-3.5" />
             Style
           </button>
@@ -201,6 +206,9 @@ export function EditorShell({ documentId, LeftPanel, CenterPanel, RightPanel }: 
           </aside>
         )}
       </div>
+
+      {/* Style Modal */}
+      <StyleModal isOpen={isStyleModalOpen} onClose={() => setIsStyleModalOpen(false)} />
     </div>
   );
 }

@@ -82,6 +82,7 @@ export function DashboardSidebar() {
         </div>
         <p className="text-xs text-white/50 mb-3 leading-relaxed">Unlock 25+ templates, unlimited AI generations & more.</p>
         <button
+          type="button"
           className="w-full py-2 rounded-lg text-xs font-bold text-white transition-all duration-200 hover:-translate-y-0.5"
           style={{ background: 'linear-gradient(135deg, #4F46E5, #7C3AED)' }}
         >
@@ -105,6 +106,7 @@ export function DashboardSidebar() {
           );
         })}
         <button
+          type="button"
           onClick={() => signOut({ callbackUrl: '/' })}
           className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-white/40 hover:text-rose-400 hover:bg-rose-500/5 transition-all duration-200 w-full"
         >

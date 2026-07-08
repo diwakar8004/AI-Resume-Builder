@@ -14,15 +14,15 @@ export function MinimalTemplate() {
       <header style={{ textAlign: 'center', marginBottom: '20px', paddingBottom: '16px', borderBottom: '1px solid #ddd' }}>
         <h1 style={{ fontSize: '26px', fontWeight: 400, color: '#111', letterSpacing: '0.12em', textTransform: 'uppercase', fontFamily: 'Georgia, serif' }}>{name}</h1>
         {pi.jobTitle && <p style={{ fontSize: '12px', color: '#666', marginTop: '4px', letterSpacing: '0.06em' }}>{pi.jobTitle}</p>}
-        <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '12px', marginTop: '10px', fontSize: '10.5px', color: '#777' }}>
-          {pi.email && <span>{pi.email}</span>}
+        <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '12px', marginTop: '10px', fontSize: '10.5px', color: '#777', wordBreak: 'break-word', overflowWrap: 'anywhere', whiteSpace: 'normal' }}>
+          {pi.email && <span style={{ wordBreak: 'break-word', minWidth: 0 }}>{pi.email}</span>}
           {pi.email && pi.phone && <span>|</span>}
-          {pi.phone && <span>{pi.phone}</span>}
+          {pi.phone && <span style={{ minWidth: 0 }}>{pi.phone}</span>}
           {pi.phone && pi.location && <span>|</span>}
-          {pi.location && <span>{pi.location}</span>}
-          {pi.linkedin && <><span>|</span><span>{pi.linkedin}</span></>}
-          {pi.github && <><span>|</span><span>{pi.github}</span></>}
-          {pi.website && <><span>|</span><span>{pi.website}</span></>}
+          {pi.location && <span style={{ minWidth: 0 }}>{pi.location}</span>}
+          {pi.linkedin && <><span>|</span><span style={{ wordBreak: 'break-word', overflowWrap: 'anywhere', minWidth: 0 }}>{pi.linkedin}</span></>}
+          {pi.github && <><span>|</span><span style={{ wordBreak: 'break-word', overflowWrap: 'anywhere', minWidth: 0 }}>{pi.github}</span></>}
+          {pi.website && <><span>|</span><span style={{ wordBreak: 'break-word', overflowWrap: 'anywhere', minWidth: 0 }}>{pi.website}</span></>}
         </div>
       </header>
 

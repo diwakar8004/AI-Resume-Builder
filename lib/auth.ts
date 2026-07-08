@@ -1,5 +1,6 @@
 import NextAuth from 'next-auth';
 import Google from 'next-auth/providers/google';
+import Credentials from 'next-auth/providers/credentials';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import prisma from './prisma';
 
@@ -34,6 +35,32 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
       allowDangerousEmailAccountLinking: true,
     }),
+    ...(process.env.NODE_ENV !== 'production'
+      ? [
+          Credentials({
+            id: 'credentials',
+            name: 'Dev Account',
+            credentials: {
+              email: { label: 'Email', type: 'email', placeholder: 'test@example.com' },
+              password: { label: 'Password', type: 'password', placeholder: 'password' },
+            },
+            async authorize(credentials) {
+              if (!credentials?.email) return null;
+              const email = credentials.email.toLowerCase();
+              let user = await prisma.user.findUnique({ where: { email } });
+              if (!user) {
+                user = await prisma.user.create({
+                  data: {
+                    email,
+                    name: email.split('@')[0],
+                  },
+                });
+              }
+              return user;
+            },
+          }),
+        ]
+      : []),
   ],
   pages: {
     signIn: '/login',
@@ -62,7 +89,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (url.startsWith(baseUrl)) return url;
       return baseUrl;
     },
-    async signIn({ user, account, profile }) {
+    async signIn({ user, account }) {
       console.log('[SignIn Callback] User attempting sign in:', { email: user.email, provider: account?.provider });
       return true;
     },

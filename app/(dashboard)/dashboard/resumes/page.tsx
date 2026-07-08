@@ -79,7 +79,7 @@ export default function ResumesPage() {
             className="w-full pl-10 pr-4 py-2.5 rounded-xl text-sm text-white placeholder-white/25 border border-white/8 bg-white/4 focus:outline-none focus:border-indigo-500/40 transition-all duration-200"
           />
         </div>
-        <button className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium text-white/50 hover:text-white border border-white/8 bg-white/3 hover:bg-white/6 transition-all duration-200">
+        <button type="button" className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium text-white/50 hover:text-white border border-white/8 bg-white/3 hover:bg-white/6 transition-all duration-200">
           <Filter className="w-4 h-4" />
           Filter
         </button>

@@ -29,7 +29,7 @@ export function CreateDocumentModal({ children }: { children: React.ReactNode })
               Create New Resume
             </Dialog.Title>
             <Dialog.Close asChild>
-              <button className="text-white/50 hover:text-white transition-colors">
+              <button type="button" className="text-white/50 hover:text-white transition-colors">
                 <X className="w-5 h-5" />
               </button>
             </Dialog.Close>
@@ -43,6 +43,7 @@ export function CreateDocumentModal({ children }: { children: React.ReactNode })
           
           <div className="flex flex-col gap-3">
             <button
+              type="button"
               onClick={handleCreate}
               className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl text-sm font-bold text-white transition-all duration-300 hover:-translate-y-0.5"
               style={{
@@ -54,7 +55,7 @@ export function CreateDocumentModal({ children }: { children: React.ReactNode })
               Start Blank Resume
             </button>
             <Dialog.Close asChild>
-              <button className="w-full py-3.5 rounded-xl text-sm font-semibold text-white/70 hover:text-white border border-white/10 bg-white/5 hover:bg-white/10 transition-colors">
+              <button type="button" className="w-full py-3.5 rounded-xl text-sm font-semibold text-white/70 hover:text-white border border-white/10 bg-white/5 hover:bg-white/10 transition-colors">
                 Cancel
               </button>
             </Dialog.Close>

@@ -13,7 +13,7 @@ function useDebouncedCallback(callback: (...args: unknown[]) => void, delay = 10
   };
 }
 
-export function Autosave({ documentId: routeDocumentId }: { documentId?: string | null }) {
+export function Autosave({ documentId: routeDocumentId, createNew = false }: { documentId?: string | null; createNew?: boolean }) {
   const { data: session } = useSession();
   const {
     documentId,
@@ -46,25 +46,27 @@ export function Autosave({ documentId: routeDocumentId }: { documentId?: string 
             return;
           }
         } catch {
-          // ignore and fallthrough to listing
+          // ignore and fallthrough to listing or creation
         }
       }
 
-      // Otherwise, if the user has any documents, load the most recent
-      try {
-        const listRes = await fetch('/api/documents');
-        if (listRes.ok) {
-          const { documents } = await listRes.json();
-          if (documents && documents.length > 0) {
-            const d = documents[0];
-            setDocumentId(d.id);
-            setDocumentTitle(d.title || 'Untitled Resume');
-            if (d.resumeData) loadResumeData(d.resumeData);
-            return;
+      if (!createNew) {
+        // Otherwise, if the user has any documents, load the most recent
+        try {
+          const listRes = await fetch('/api/documents');
+          if (listRes.ok) {
+            const { documents } = await listRes.json();
+            if (documents && documents.length > 0) {
+              const d = documents[0];
+              setDocumentId(d.id);
+              setDocumentTitle(d.title || 'Untitled Resume');
+              if (d.resumeData) loadResumeData(d.resumeData);
+              return;
+            }
           }
+        } catch {
+          // ignore
         }
-      } catch {
-        // ignore
       }
 
       // No existing document: create one from local state if not created already

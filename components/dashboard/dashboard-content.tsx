@@ -91,7 +91,7 @@ export default function DashboardContent({ documents }: DashboardContentProps) {
               <p className="text-xs text-white/50">Get personalized suggestions to improve your resume&apos;s ATS score</p>
             </div>
           </div>
-          <button className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white flex-shrink-0 transition-all duration-200 hover:-translate-y-0.5" style={{ background: 'linear-gradient(135deg, #4F46E5, #7C3AED)' }}>
+          <button type="button" className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white flex-shrink-0 transition-all duration-200 hover:-translate-y-0.5" style={{ background: 'linear-gradient(135deg, #4F46E5, #7C3AED)' }}>
             <Sparkles className="w-3.5 h-3.5" />
             Analyze My Resumes
           </button>
@@ -109,7 +109,7 @@ export default function DashboardContent({ documents }: DashboardContentProps) {
             className="w-full pl-10 pr-4 py-2.5 rounded-xl text-sm text-white placeholder-white/25 border border-white/8 bg-white/4 focus:outline-none focus:border-indigo-500/40 transition-all duration-200"
           />
         </div>
-        <button className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium text-white/50 hover:text-white border border-white/8 bg-white/3 hover:bg-white/6 transition-all duration-200">
+        <button type="button" className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium text-white/50 hover:text-white border border-white/8 bg-white/3 hover:bg-white/6 transition-all duration-200">
           <Filter className="w-4 h-4" />
           Filter
         </button>

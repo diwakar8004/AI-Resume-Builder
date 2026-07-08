@@ -57,6 +57,8 @@ export function DocumentCard({ doc }: { doc: DocumentData }) {
         {/* Menu button */}
         <div className="relative">
           <button
+            type="button"
+            aria-label="Open document actions"
             onClick={(e) => { e.stopPropagation(); setMenuOpen(!menuOpen); }}
             className="p-1.5 rounded-lg text-white/30 hover:text-white hover:bg-white/8 transition-all opacity-0 group-hover:opacity-100"
           >
@@ -74,6 +76,7 @@ export function DocumentCard({ doc }: { doc: DocumentData }) {
                 { icon: Trash2, label: 'Delete', danger: true },
               ].map((item, i) => (
                 <button
+                  type="button"
                   key={i}
                   onClick={() => setMenuOpen(false)}
                   className={cn(

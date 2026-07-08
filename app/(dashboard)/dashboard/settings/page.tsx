@@ -12,7 +12,6 @@ import {
   Trash2,
   Sparkles,
   CheckCircle2,
-  Zap,
 } from 'lucide-react';
 
 type NotificationSettings = {
@@ -41,12 +40,14 @@ export default function SettingsPage() {
 
   useEffect(() => {
     if (session) {
-      setValues((current) => ({
-        ...current,
-        name: session.user?.name || current.name,
-        email: session.user?.email || current.email,
-      }));
-      setProfileImage(session.user?.image || '');
+      queueMicrotask(() => {
+        setValues((current) => ({
+          ...current,
+          name: session.user?.name || current.name,
+          email: session.user?.email || current.email,
+        }));
+        setProfileImage(session.user?.image || '');
+      });
     }
   }, [session]);
 
@@ -298,7 +299,7 @@ export default function SettingsPage() {
                   <span className="rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-200">Current</span>
                 </div>
                 <div>
-                  <p className="text-sm text-white/60">You're on the starter plan with limited AI suggestions, resumes, and cover letters.</p>
+                    <p className="text-sm text-white/60">You&apos;re on the starter plan with limited AI suggestions, resumes, and cover letters.</p>
                 </div>
                 <button
                   type="button"

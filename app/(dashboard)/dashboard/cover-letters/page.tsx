@@ -59,10 +59,12 @@ export default function CoverLettersPage() {
     if (stored) {
       try {
         const parsed: CoverLetter[] = JSON.parse(stored);
-        setLetters(parsed);
-        if (parsed.length > 0) {
-          setSelectedId(parsed[0].id);
-        }
+        queueMicrotask(() => {
+          setLetters(parsed);
+          if (parsed.length > 0) {
+            setSelectedId(parsed[0].id);
+          }
+        });
       } catch {
         window.localStorage.removeItem(LOCAL_STORAGE_KEY);
       }
@@ -71,7 +73,7 @@ export default function CoverLettersPage() {
 
   useEffect(() => {
     if (session?.user?.name && !form.applicantName) {
-      setForm((current) => ({ ...current, applicantName: session?.user?.name || '' }));
+      queueMicrotask(() => setForm((current) => ({ ...current, applicantName: session?.user?.name || '' })));
     }
   }, [session, form.applicantName]);
 
@@ -151,7 +153,7 @@ export default function CoverLettersPage() {
   const handleDelete = (id: string) => {
     setLetters((current) => current.filter((letter) => letter.id !== id));
     if (selectedId === id) {
-      setSelectedId((current) => {
+      setSelectedId(() => {
         const remaining = letters.filter((letter) => letter.id !== id);
         return remaining[0]?.id || null;
       });

@@ -16,13 +16,13 @@ function ClassicTemplate() {
       <header className="border-b-2 border-[#4F46E5] pb-4 mb-5">
         <h1 style={{ fontSize: '28px', fontWeight: 800, color: '#111', lineHeight: 1.1, fontFamily: 'Outfit, sans-serif' }}>{name}</h1>
         {pi.jobTitle && <p style={{ fontSize: '14px', color: '#4F46E5', fontWeight: 600, marginTop: '4px' }}>{pi.jobTitle}</p>}
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', marginTop: '8px' }}>
-          {pi.email && <span style={{ fontSize: '11px', color: '#555', display: 'flex', alignItems: 'center', gap: '4px' }}>✉ {pi.email}</span>}
-          {pi.phone && <span style={{ fontSize: '11px', color: '#555', display: 'flex', alignItems: 'center', gap: '4px' }}>📞 {pi.phone}</span>}
-          {pi.location && <span style={{ fontSize: '11px', color: '#555', display: 'flex', alignItems: 'center', gap: '4px' }}>📍 {pi.location}</span>}
-          {pi.linkedin && <span style={{ fontSize: '11px', color: '#4F46E5' }}>{pi.linkedin}</span>}
-          {pi.github && <span style={{ fontSize: '11px', color: '#4F46E5' }}>{pi.github}</span>}
-          {pi.website && <span style={{ fontSize: '11px', color: '#4F46E5' }}>{pi.website}</span>}
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', marginTop: '8px', wordBreak: 'break-word', overflowWrap: 'anywhere', whiteSpace: 'normal' }}>
+          {pi.email && <span style={{ fontSize: '11px', color: '#555', display: 'flex', alignItems: 'center', gap: '4px', wordBreak: 'break-word' }}>✉ {pi.email}</span>}
+          {pi.phone && <span style={{ fontSize: '11px', color: '#555', display: 'flex', alignItems: 'center', gap: '4px', minWidth: 0 }}>📞 {pi.phone}</span>}
+          {pi.location && <span style={{ fontSize: '11px', color: '#555', display: 'flex', alignItems: 'center', gap: '4px', minWidth: 0 }}>📍 {pi.location}</span>}
+          {pi.linkedin && <span style={{ fontSize: '11px', color: '#4F46E5', wordBreak: 'break-word', overflowWrap: 'anywhere', minWidth: 0 }}>{pi.linkedin}</span>}
+          {pi.github && <span style={{ fontSize: '11px', color: '#4F46E5', wordBreak: 'break-word', overflowWrap: 'anywhere', minWidth: 0 }}>{pi.github}</span>}
+          {pi.website && <span style={{ fontSize: '11px', color: '#4F46E5', wordBreak: 'break-word', overflowWrap: 'anywhere', minWidth: 0 }}>{pi.website}</span>}
         </div>
       </header>
 

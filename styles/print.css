@@ -1,25 +1,37 @@
 /* ────────────────────────────────────────────────────────────────────────────
    PDF Export Styles - Resume Optimization
+   
+   CRITICAL: All styles are wrapped in @media print
+   This ensures they ONLY apply when printing/exporting to PDF
+   Screen display is NOT affected by these rules
    ────────────────────────────────────────────────────────────────────────────
 */
 
-/* Print media query styles */
 @media print {
-  /* Reset and base styles */
+  /* ──────────────────────────────────────────────────────────────────────────
+     PRESERVE COLORS AND PRINT-SPECIFIC SETTINGS
+     ────────────────────────────────────────────────────────────────────────────*/
+
   * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
   }
 
-  body, html {
+  /* ──────────────────────────────────────────────────────────────────────────
+     PAGE SETTINGS - A4 FORMAT
+     ────────────────────────────────────────────────────────────────────────────*/
+
+  @page {
+    size: A4;
     margin: 0;
     padding: 0;
-    background: white !important;
-    font-family: 'Inter', 'Helvetica', 'Arial', sans-serif;
   }
 
-  /* Hide all non-resume UI elements */
+  /* ──────────────────────────────────────────────────────────────────────────
+     HIDE UI ELEMENTS - SHOW ONLY RESUME
+     ────────────────────────────────────────────────────────────────────────────*/
+
   header:not(.resume-preview header),
   nav,
   .navbar,
@@ -33,206 +45,285 @@
   .btn,
   [role="button"],
   .no-print,
-  main > div:not(.resume-preview) {
+  .print-wrapper,
+  main > div:not(.resume-preview),
+  .editor-shell > *:not(.resume-preview) {
     display: none !important;
+    visibility: hidden !important;
+    position: absolute !important;
+    left: -9999px !important;
   }
 
-  /* Resume Preview Container */
-  .resume-preview {
-    width: 210mm !important;
-    height: auto !important;
-    min-height: 297mm !important;
-    margin: 0 !important;
-    padding: 14mm 16mm !important;
-    background: white !important;
-    color: #111 !important;
-    box-shadow: none !important;
-    page-break-after: always;
-    page-break-inside: avoid;
-    display: block !important;
-  }
+  /* ──────────────────────────────────────────────────────────────────────────
+     BODY AND HTML - PRINT MODE
+     ────────────────────────────────────────────────────────────────────────────*/
 
-  /* A4 Page settings */
-  @page {
-    size: A4;
-    margin: 0;
-    padding: 0;
-  }
-
-  /* Print wrapper */
-  .print-wrapper {
-    transform: none !important;
+  html, body {
     margin: 0 !important;
     padding: 0 !important;
+    background: white !important;
+    overflow: visible !important;
   }
 
-  /* Typography - Ensure proper rendering */
-  h1, h2, h3, h4, h5, h6 {
-    page-break-after: avoid;
-    page-break-inside: avoid;
-  }
-
-  p {
-    page-break-inside: avoid;
-    orphans: 3;
-    widows: 3;
-  }
-
-  /* Preserve colors and styling for PDF */
-  header {
-    border-bottom-color: #4F46E5 !important;
-    border-bottom-width: 2px !important;
-    border-bottom-style: solid !important;
-  }
-
-  section {
-    page-break-inside: avoid;
-    margin-bottom: 16px;
-  }
-
-  /* Modern Template Header */
-  header[style*="background"] {
-    background: linear-gradient(135deg, #4F46E5, #7C3AED) !important;
-    color: white !important;
-    page-break-inside: avoid;
-  }
-
-  /* Ensure text is readable and preserve colors */
-  * {
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
-  }
-
-  /* Images and icons */
-  img {
-    max-width: 100% !important;
-    height: auto !important;
-    page-break-inside: avoid;
-  }
-
-  /* Links - make text visible but remove link styling */
-  a {
-    text-decoration: none !important;
-    color: inherit !important;
-  }
-
-  /* Remove background colors from badges but keep text */
-  span[style*="background"],
-  div[style*="background"] {
-    background-color: transparent !important;
-    background: transparent !important;
-  }
-
-  /* Spacing and margins */
-  div, section, article {
-    margin-bottom: 8px;
-  }
-
-  /* Ensure experience entries don't break */
-  .experience-item,
-  .education-item,
-  .project-item,
-  [style*="marginBottom"] {
-    page-break-inside: avoid;
-  }
-
-  /* Tables in resume */
-  table {
-    page-break-inside: avoid;
-    border-collapse: collapse;
-  }
-
-  tr, td {
-    page-break-inside: avoid;
-  }
-
-  /* Text rendering optimization */
-  body {
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-rendering: optimizeLegibility;
-  }
-
-  /* Ensure proper line spacing */
-  p, li {
-    line-height: 1.5;
-  }
-
-  /* Lists */
-  ul, ol {
-    margin-left: 20px;
-    page-break-inside: avoid;
-  }
-
-  li {
-    page-break-inside: avoid;
-    margin-bottom: 4px;
-  }
-
-  /* Prevent main content area from having scroll or overflow issues */
   main {
     margin: 0 !important;
     padding: 0 !important;
     overflow: visible !important;
   }
 
-  /* Ensure sections have proper spacing */
-  .resume-preview section {
+  /* ──────────────────────────────────────────────────────────────────────────
+     RESUME PREVIEW CONTAINER - A4 DIMENSIONS
+     ────────────────────────────────────────────────────────────────────────────*/
+
+  .resume-preview {
+    width: 210mm !important;
+    height: auto !important;
+    min-height: 297mm !important;
+    max-width: 210mm !important;
+    margin: 0 !important;
+    padding: 14mm 16mm !important;
+    background: white !important;
+    color: #111111 !important;
+    box-shadow: none !important;
+    display: block !important;
+    overflow: visible !important;
+    position: static !important;
+    transform: none !important;
+    page-break-after: always;
     page-break-inside: avoid;
-    margin-bottom: 14px;
+    font-size: 10px;
+    line-height: 1.5;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Accent colors for different templates */
-  div[style*="#4F46E5"] {
+  /* ──────────────────────────────────────────────────────────────────────────
+     TEXT PRESERVATION - SPACING, WRAPPING, WHITESPACE
+     ────────────────────────────────────────────────────────────────────────────*/
+
+  .resume-preview * {
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    word-break: break-word !important;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Ensure proper text rendering and spacing */
+  p, span, div, h1, h2, h3, h4, h5, h6, li, a {
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    word-break: break-word !important;
+  }
+
+  /* Contact information - handle long URLs */
+  .resume-preview header div[style*="display: flex"] {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 12px !important;
+    word-break: break-word !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  .resume-preview header span {
+    white-space: normal !important;
+    word-break: break-word !important;
+    overflow-wrap: anywhere !important;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  /* ──────────────────────────────────────────────────────────────────────────
+     TYPOGRAPHY - ENSURE TEXT READABILITY
+     ────────────────────────────────────────────────────────────────────────────*/
+
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+    page-break-inside: avoid;
+    orphans: 3;
+    widows: 3;
+    color: #111111 !important;
+  }
+
+  p {
+    page-break-inside: avoid;
+    orphans: 3;
+    widows: 3;
+    line-height: 1.5;
+  }
+
+  p, li {
+    line-height: 1.5;
+  }
+
+  /* ──────────────────────────────────────────────────────────────────────────
+     SECTIONS - PREVENT BREAKING AND OVERLAPPING
+     ────────────────────────────────────────────────────────────────────────────*/
+
+  section {
+    page-break-inside: avoid;
+    break-inside: avoid;
+    margin-bottom: 16px;
+    display: block !important;
+    overflow: visible !important;
+  }
+
+  .resume-preview section {
+    page-break-inside: avoid;
+    break-inside: avoid;
+    margin-bottom: 14px;
+    display: block !important;
+  }
+
+  /* Entry containers - prevent breaking */
+  .resume-preview div[style*="marginBottom"] {
+    page-break-inside: avoid;
+    break-inside: avoid;
+    overflow: visible !important;
+  }
+
+  /* Experience/Education/Project items */
+  .experience-item,
+  .education-item,
+  .project-item {
+    page-break-inside: avoid;
+    break-inside: avoid;
+    display: block !important;
+  }
+
+  /* ──────────────────────────────────────────────────────────────────────────
+     HEADERS - PRESERVE STYLING
+     ────────────────────────────────────────────────────────────────────────────*/
+
+  header {
+    page-break-inside: avoid;
+    break-inside: avoid;
+    display: block !important;
+    overflow: visible !important;
+    position: static !important;
+  }
+
+  /* ──────────────────────────────────────────────────────────────────────────
+     LINKS AND STYLING
+     ────────────────────────────────────────────────────────────────────────────*/
+
+  a {
+    text-decoration: none !important;
+    color: inherit !important;
+    word-break: break-word !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  /* ──────────────────────────────────────────────────────────────────────────
+     IMAGES AND ICONS
+     ────────────────────────────────────────────────────────────────────────────*/
+
+  img {
+    max-width: 100% !important;
+    width: 100% !important;
+    height: auto !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+    display: block !important;
+  }
+
+  /* ──────────────────────────────────────────────────────────────────────────
+     LISTS AND BULLETS
+     ────────────────────────────────────────────────────────────────────────────*/
+
+  ul, ol {
+    margin-left: 20px;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  li {
+    page-break-inside: avoid;
+    break-inside: avoid;
+    margin-bottom: 4px;
+    list-style-type: disc;
+  }
+
+  /* ──────────────────────────────────────────────────────────────────────────
+     TABLES - PREVENT BREAKING
+     ────────────────────────────────────────────────────────────────────────────*/
+
+  table {
+    page-break-inside: avoid;
+    break-inside: avoid;
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  tr, td {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* ──────────────────────────────────────────────────────────────────────────
+     COLOR PRESERVATION
+     ────────────────────────────────────────────────────────────────────────────*/
+
+  div[style*="#4F46E5"],
+  span[style*="#4F46E5"] {
     color: #4F46E5 !important;
   }
 
-  div[style*="#7C3AED"] {
+  div[style*="#7C3AED"],
+  span[style*="#7C3AED"] {
     color: #7C3AED !important;
+  }
+
+  /* ──────────────────────────────────────────────────────────────────────────
+     REMOVE BACKGROUNDS FROM BADGES BUT KEEP TEXT
+     ────────────────────────────────────────────────────────────────────────────*/
+
+  span[style*="background"],
+  div[style*="background"] {
+    background-color: transparent !important;
+    background: transparent !important;
+  }
+
+  /* ──────────────────────────────────────────────────────────────────────────
+     SPACING - PRINT ONLY
+     ────────────────────────────────────────────────────────────────────────────*/
+
+  div, section, article {
+    display: block !important;
+    overflow: visible !important;
+    position: static !important;
+  }
+
+  /* ──────────────────────────────────────────────────────────────────────────
+     TEXT RENDERING OPTIMIZATION
+     ────────────────────────────────────────────────────────────────────────────*/
+
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* ──────────────────────────────────────────────────────────────────────────
+     WIDOW/ORPHAN PREVENTION
+     ────────────────────────────────────────────────────────────────────────────*/
+
+  p, li, dt, dd {
+    orphans: 3;
+    widows: 3;
   }
 }
 
-/* HTML2PDF specific optimizations - for on-screen display */
+/* ──────────────────────────────────────────────────────────────────────────
+   SCREEN DISPLAY - OPTIONAL VISUAL ENHANCEMENTS ONLY
+   These rules only apply to screen display, NOT print
+   ────────────────────────────────────────────────────────────────────────────*/
+
 @media screen {
   .resume-preview {
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
     border-radius: 4px;
-  }
-}
-
-/* Ensure proper font rendering for all templates */
-@font-face {
-  font-family: 'Outfit';
-  font-style: normal;
-  font-weight: 400;
-  src: system-ui, -apple-system, sans-serif;
-}
-
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 400;
-  src: system-ui, -apple-system, sans-serif;
-}
-
-@font-face {
-  font-family: 'Georgia';
-  font-style: normal;
-  font-weight: 400;
-  src: system-ui, -apple-system, sans-serif;
-}
-
-/* High DPI rendering support */
-@supports (-webkit-appearance: none) {
-  body {
-    -webkit-font-smoothing: subpixel-antialiased;
-  }
-}
-
-/* Avoid widow/orphan text */
-@media print {
-  p, li, dt, dd {
-    orphans: 3;
-    widows: 3;
   }
 }

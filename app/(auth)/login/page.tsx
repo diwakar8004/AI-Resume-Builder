@@ -4,12 +4,11 @@ import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import { Sparkles, Loader2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
 import { Suspense } from 'react';
 
 function LoginContent() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -30,7 +29,7 @@ function LoginContent() {
         'Verification': 'Verification failed.',
       };
       const message = errorMessages[errorParam] || 'Authentication failed. Please try again.';
-      setError(message);
+      queueMicrotask(() => setError(message));
       toast.error(message);
     }
   }, [searchParams]);
@@ -43,7 +42,7 @@ function LoginContent() {
         callbackUrl: `${window.location.origin}/dashboard`,
         redirect: true,
       });
-    } catch (err) {
+    } catch {
       setError('An unexpected error occurred. Please try again.');
       toast.error('An unexpected error occurred. Please try again.');
     } finally {

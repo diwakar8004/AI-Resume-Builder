@@ -16,13 +16,13 @@ export function ModernTemplate() {
         <div style={{ position: 'absolute', top: 0, right: 0, width: '120px', height: '120px', background: 'rgba(255,255,255,0.08)', borderRadius: '0 0 0 120px' }} />
         <h1 style={{ fontSize: '30px', fontWeight: 800, lineHeight: 1.1, fontFamily: 'Outfit, sans-serif', letterSpacing: '-0.02em' }}>{name}</h1>
         {pi.jobTitle && <p style={{ fontSize: '15px', fontWeight: 500, marginTop: '6px', opacity: 0.9 }}>{pi.jobTitle}</p>}
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', marginTop: '14px', fontSize: '11px', opacity: 0.85 }}>
-          {pi.email && <span>✉ {pi.email}</span>}
-          {pi.phone && <span>📞 {pi.phone}</span>}
-          {pi.location && <span>📍 {pi.location}</span>}
-          {pi.linkedin && <span>{pi.linkedin}</span>}
-          {pi.github && <span>{pi.github}</span>}
-          {pi.website && <span>{pi.website}</span>}
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', marginTop: '14px', fontSize: '11px', opacity: 0.85, wordBreak: 'break-word', overflowWrap: 'anywhere', whiteSpace: 'normal' }}>
+          {pi.email && <span style={{ wordBreak: 'break-word', minWidth: 0 }}>✉ {pi.email}</span>}
+          {pi.phone && <span style={{ minWidth: 0 }}>📞 {pi.phone}</span>}
+          {pi.location && <span style={{ minWidth: 0 }}>📍 {pi.location}</span>}
+          {pi.linkedin && <span style={{ wordBreak: 'break-word', overflowWrap: 'anywhere', minWidth: 0 }}>{pi.linkedin}</span>}
+          {pi.github && <span style={{ wordBreak: 'break-word', overflowWrap: 'anywhere', minWidth: 0 }}>{pi.github}</span>}
+          {pi.website && <span style={{ wordBreak: 'break-word', overflowWrap: 'anywhere', minWidth: 0 }}>{pi.website}</span>}
         </div>
       </header>
 
