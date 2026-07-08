@@ -29,6 +29,10 @@ export async function POST(req: NextRequest) {
     if (payment.status === 'SUCCESS') {
       return NextResponse.json({ success: true, message: 'Payment already verified' });
     }
+    // ensure the payment belongs to the authenticated user
+    if (payment.userId !== (user.id as string)) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
 
     const signatureValid = verifyRazorpaySignature(body.razorpay_signature, body.razorpay_order_id, body.razorpay_payment_id);
     if (!signatureValid) {
@@ -39,20 +43,19 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Signature verification failed' }, { status: 400 });
     }
 
-    await prisma.paymentHistory.update({
-      where: { razorpayOrderId: body.razorpay_order_id },
-      data: {
-        status: 'SUCCESS',
-        razorpayPaymentId: body.razorpay_payment_id,
-        razorpaySignature: body.razorpay_signature,
-        notes: 'Payment verified successfully',
-      },
-    });
-
-    await prisma.user.update({
-      where: { id: user.id as string },
-      data: { plan: 'PRO' },
-    });
+    // apply updates atomically
+    await prisma.$transaction([
+      prisma.paymentHistory.update({
+        where: { razorpayOrderId: body.razorpay_order_id },
+        data: {
+          status: 'SUCCESS',
+          razorpayPaymentId: body.razorpay_payment_id,
+          razorpaySignature: body.razorpay_signature,
+          notes: 'Payment verified successfully',
+        },
+      }),
+      prisma.user.update({ where: { id: user.id as string }, data: { plan: 'PRO' } }),
+    ]);
 
     return NextResponse.json({ success: true, paymentId: body.razorpay_payment_id });
   } catch (error) {

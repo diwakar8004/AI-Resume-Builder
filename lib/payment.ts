@@ -24,11 +24,16 @@ export function getRazorpayWebhookSecret(): string {
 
 export function verifyRazorpaySignature(signature: string, orderId: string, paymentId: string) {
   const payload = `${orderId}|${paymentId}`;
-  const expected = crypto
-    .createHmac('sha256', getRazorpayKeySecret())
-    .update(payload)
-    .digest('hex');
-  return signature === expected;
+  const expectedHex = crypto.createHmac('sha256', getRazorpayKeySecret()).update(payload).digest('hex');
+  try {
+    const sigBuf = Buffer.from(signature, 'hex');
+    const expBuf = Buffer.from(expectedHex, 'hex');
+    if (sigBuf.length !== expBuf.length) return false;
+    return crypto.timingSafeEqual(sigBuf, expBuf);
+  } catch (err) {
+    // Fallback to direct compare if decoding fails
+    return signature === expectedHex;
+  }
 }
 
 export function premiumTemplateGuard(plan: string | undefined, templateId: string | undefined) {
@@ -48,7 +53,10 @@ export function requireProPlan(plan?: string) {
 export async function createRazorpayOrder(userId: string, amount: number, interval: BillingInterval, currency = 'INR') {
   const keyId = getRazorpayKeyId();
   const secret = getRazorpayKeySecret();
-  const receipt = `resumeai-${userId}-${Date.now()}`;
+  // Razorpay requires receipt length <= 40. Create a short, unique receipt id.
+  const shortUser = String(userId).slice(0, 8);
+  const timeSuffix = String(Date.now()).slice(-6);
+  const receipt = `res-${shortUser}-${timeSuffix}`.slice(0, 40);
   const body = {
     amount,
     currency,

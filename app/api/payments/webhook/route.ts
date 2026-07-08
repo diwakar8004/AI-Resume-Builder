@@ -13,8 +13,16 @@ export async function POST(req: NextRequest) {
 
   const expected = getRazorpayWebhookSecret();
   const hash = crypto.createHmac('sha256', expected).update(rawBody).digest('hex');
-  if (hash !== signature) {
-    return NextResponse.json({ error: 'Webhook signature mismatch' }, { status: 400 });
+  try {
+    const sigBuf = Buffer.from(signature, 'hex');
+    const hashBuf = Buffer.from(hash, 'hex');
+    if (sigBuf.length !== hashBuf.length || !crypto.timingSafeEqual(sigBuf, hashBuf)) {
+      return NextResponse.json({ error: 'Webhook signature mismatch' }, { status: 400 });
+    }
+  } catch (err) {
+    if (hash !== signature) {
+      return NextResponse.json({ error: 'Webhook signature mismatch' }, { status: 400 });
+    }
   }
 
   type RazorpayWebhookPayload = {
@@ -40,20 +48,19 @@ export async function POST(req: NextRequest) {
     }
 
     if (entry.status !== 'SUCCESS') {
-      await prisma.paymentHistory.update({
-        where: { razorpayOrderId: payment.order_id },
-        data: {
-          status: 'SUCCESS',
-          razorpayPaymentId: payment.id,
-          razorpaySignature: signature,
-          notes: 'Webhook confirmed capture',
-        },
-      });
-
-      await prisma.user.update({
-        where: { id: entry.userId },
-        data: { plan: 'PRO' },
-      });
+      // apply updates atomically
+      await prisma.$transaction([
+        prisma.paymentHistory.update({
+          where: { razorpayOrderId: payment.order_id },
+          data: {
+            status: 'SUCCESS',
+            razorpayPaymentId: payment.id,
+            razorpaySignature: signature,
+            notes: 'Webhook confirmed capture',
+          },
+        }),
+        prisma.user.update({ where: { id: entry.userId }, data: { plan: 'PRO' } }),
+      ]);
     }
   }
 
