@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Menu, X, Sparkles } from 'lucide-react';
+import { HomeLink } from '@/components/shared/home-link';
 
 const navLinks = [
   { label: 'Features', href: '#features' },
@@ -33,7 +34,7 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 group">
+          <HomeLink className="flex items-center gap-2 group">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg group-hover:shadow-indigo-500/40 transition-shadow duration-300">
               <Sparkles className="w-4 h-4 text-white" />
             </div>
@@ -43,7 +44,7 @@ export default function Navbar() {
             >
               Resume<span className="text-indigo-400">AI</span>
             </span>
-          </Link>
+          </HomeLink>
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-1">

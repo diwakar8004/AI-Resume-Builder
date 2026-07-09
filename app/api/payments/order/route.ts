@@ -8,8 +8,8 @@ const orderRequestSchema = z.object({
 });
 
 const pricing = {
-  monthly: { amount: 49900, currency: 'INR' },
-  yearly: { amount: 499000, currency: 'INR' },
+  monthly: { amount: 900, currency: 'INR' },
+  yearly: { amount: 8900, currency: 'INR' },
 };
 
 export async function POST(req: NextRequest) {

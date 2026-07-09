@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { HomeLink } from '@/components/shared/home-link';
 import { Sparkles, ChevronLeft, Calendar, Clock, ArrowRight } from 'lucide-react';
 
 const blogPosts = [
@@ -55,21 +56,18 @@ export default function BlogPage() {
 
       {/* Header */}
       <header className="max-w-6xl mx-auto px-6 py-8 flex items-center justify-between border-b border-white/5 relative z-10">
-        <Link href="/" className="flex items-center gap-2">
+        <HomeLink className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
             <Sparkles className="w-4.5 h-4.5 text-white" />
           </div>
           <span className="font-bold text-xl text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>
             Resume<span className="text-indigo-400">AI</span>
           </span>
-        </Link>
-        <Link
-          href="/"
-          className="flex items-center gap-1.5 text-sm font-semibold text-white/60 hover:text-white transition-colors"
-        >
+        </HomeLink>
+        <HomeLink className="flex items-center gap-1.5 text-sm font-semibold text-white/60 hover:text-white transition-colors">
           <ChevronLeft className="w-4 h-4" />
           Back to Home
-        </Link>
+        </HomeLink>
       </header>
 
       {/* Hero Section */}

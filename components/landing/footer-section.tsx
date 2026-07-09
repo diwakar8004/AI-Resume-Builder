@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { Sparkles, MessageSquare, Briefcase, Terminal, Mail, ArrowRight } from 'lucide-react';
+import { HomeLink } from '@/components/shared/home-link';
 
 const footerLinks = {
   Product: [
@@ -79,7 +80,7 @@ export function FooterSection() {
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6 sm:gap-8 lg:gap-12">
           {/* Brand column */}
           <div className="col-span-2 sm:col-span-1">
-            <Link href="/" className="flex items-center gap-2 mb-3 sm:mb-4 group">
+            <HomeLink className="flex items-center gap-2 mb-3 sm:mb-4 group">
               <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
                 <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
               </div>
@@ -89,7 +90,7 @@ export function FooterSection() {
               >
                 Resume<span className="text-indigo-400">AI</span>
               </span>
-            </Link>
+            </HomeLink>
             <p className="text-xs text-white/35 leading-relaxed mb-4 sm:mb-6">
               Build job-winning resumes with the power of AI. Trusted by 2M+ professionals worldwide.
             </p>

@@ -82,15 +82,21 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     },
     async session({ session, token }) {
       if (session.user && token.id) {
-        const dbUser = await prisma.user.findUnique({ where: { id: token.id as string } });
-        (session.user as { id?: string; plan?: string }).id = token.id as string;
-        const planFromToken = typeof token.plan === 'string' ? token.plan : 'FREE';
-        (session.user as { id?: string; plan?: string }).plan = dbUser?.plan ?? planFromToken;
-        console.log('[Session Callback] Session created:', {
-          userId: token.id,
-          email: session.user.email,
-          plan: (session.user as { plan?: string }).plan,
-        });
+        try {
+          const dbUser = await prisma.user.findUnique({ where: { id: token.id as string } });
+          (session.user as { id?: string; plan?: string }).id = token.id as string;
+          const planFromToken = typeof token.plan === 'string' ? token.plan : 'FREE';
+          (session.user as { id?: string; plan?: string }).plan = dbUser?.plan ?? planFromToken;
+          console.log('[Session Callback] Session created:', {
+            userId: token.id,
+            email: session.user.email,
+            plan: (session.user as { plan?: string }).plan,
+          });
+        } catch (err) {
+          // Don't throw — log and return the session as-is so UI doesn't crash on DB errors
+          console.error('[Session Callback] Error fetching user from DB:', err);
+          (session.user as { id?: string }).id = token.id as string;
+        }
       }
       return session;
     },

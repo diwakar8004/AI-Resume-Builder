@@ -29,7 +29,7 @@ const plans = [
   },
   {
     name: 'Pro',
-    price: { monthly: 19, annual: 14 },
+    price: { monthly: 9, annual: 89 },
     description: 'For serious job seekers',
     badge: 'Most Popular',
     color: '#4F46E5',
@@ -165,16 +165,14 @@ export function PricingSection() {
                 <p className="text-xs text-white/40 mb-3 sm:mb-4">{plan.description}</p>
                 <div className="flex items-end gap-1">
                   <span className="text-3xl sm:text-4xl font-black text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>
-                    ${isAnnual ? plan.price.annual : plan.price.monthly}
+                    ₹{isAnnual ? plan.price.annual : plan.price.monthly}
                   </span>
                   {plan.price.monthly > 0 && (
-                    <span className="text-xs text-white/40 mb-0.5">/mo</span>
+                    <span className="text-xs text-white/40 mb-0.5">{isAnnual ? '' : '/mo'}</span>
                   )}
                 </div>
-                {isAnnual && plan.price.monthly > 0 && (
-                  <p className="text-xs text-emerald-400 mt-1">
-                    Billed ${(isAnnual ? plan.price.annual : plan.price.monthly) * 12}/year
-                  </p>
+                {isAnnual && plan.price.annual > 0 && (
+                  <p className="text-xs text-emerald-400 mt-1">Billed ₹{plan.price.annual}/year</p>
                 )}
               </div>
 

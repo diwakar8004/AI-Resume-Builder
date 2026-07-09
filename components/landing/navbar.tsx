@@ -3,9 +3,9 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { FileText, Menu, X, Moon, Sun, Sparkles, ChevronRight } from "lucide-react";
-import { useTheme } from "next-themes";
+import { FileText, Menu, X, Sparkles, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { HomeLink } from "@/components/shared/home-link";
 import { cn } from "@/lib/utils";
 
 const navLinks = [
@@ -19,11 +19,10 @@ const navLinks = [
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { theme, setTheme } = useTheme();
+  // Theme toggle removed to avoid accidental session interactions
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
     const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
@@ -45,14 +44,14 @@ export function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2.5 group">
+          <HomeLink className="flex items-center gap-2.5 group">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg group-hover:shadow-indigo-500/30 transition-shadow">
               <FileText className="w-4 h-4 text-white" />
             </div>
             <span className="font-bold text-xl font-display">
               Resume<span className="text-indigo-500">AI</span>
             </span>
-          </Link>
+          </HomeLink>
 
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center gap-1">
@@ -69,21 +68,7 @@ export function Navbar() {
 
           {/* Actions */}
           <div className="flex items-center gap-2">
-            {/* Theme Toggle */}
-            {mounted && (
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                className="hidden md:flex"
-              >
-                {theme === "dark" ? (
-                  <Sun className="w-4 h-4" />
-                ) : (
-                  <Moon className="w-4 h-4" />
-                )}
-              </Button>
-            )}
+            {/* Theme Toggle removed */}
 
             <Link href="/login" className="hidden md:block">
               <Button variant="ghost" size="sm">

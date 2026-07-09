@@ -2,6 +2,7 @@
 
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
+import { HomeLink } from '@/components/shared/home-link';
 import { Sparkles, Loader2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
@@ -66,14 +67,14 @@ function LoginContent() {
           style={{ background: 'radial-gradient(circle, #7C3AED, transparent)' }}
         />
 
-        <Link href="/" className="flex items-center gap-2 relative">
+        <HomeLink className="flex items-center gap-2 relative">
           <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg">
             <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
           </div>
           <span className="text-lg sm:text-2xl font-bold text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>
             Resume<span className="text-indigo-400">AI</span>
           </span>
-        </Link>
+        </HomeLink>
 
         <div className="relative">
           <div
@@ -116,14 +117,14 @@ function LoginContent() {
       {/* Right side - form */}
       <div className="flex flex-col justify-center w-full lg:w-1/2 px-4 sm:px-6 py-8 sm:py-12 lg:py-0">
         <div className="w-full max-w-md mx-auto">
-          <Link href="/" className="flex items-center gap-2 mb-6 sm:mb-8 lg:hidden">
+          <HomeLink className="flex items-center gap-2 mb-6 sm:mb-8 lg:hidden">
             <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
               <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
             </div>
             <span className="text-xl font-bold text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>
               Resume<span className="text-indigo-400">AI</span>
             </span>
-          </Link>
+          </HomeLink>
 
           <div className="mb-8">
             <h1 className="text-3xl font-black text-white mb-2" style={{ fontFamily: 'Outfit, sans-serif' }}>

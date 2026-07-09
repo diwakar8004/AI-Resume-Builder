@@ -2,6 +2,7 @@
 
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
+import { HomeLink } from '@/components/shared/home-link';
 import { Sparkles, Loader2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
@@ -67,14 +68,14 @@ function RegisterContent() {
         />
 
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 relative">
+        <HomeLink className="flex items-center gap-2 relative">
           <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg">
             <Sparkles className="w-5 h-5 text-white" />
           </div>
           <span className="text-2xl font-bold text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>
             Resume<span className="text-indigo-400">AI</span>
           </span>
-        </Link>
+        </HomeLink>
 
         {/* Feature highlights */}
         <div className="space-y-4 relative">
@@ -116,14 +117,14 @@ function RegisterContent() {
       <div className="flex flex-col justify-center w-full lg:w-1/2 px-6 py-12">
         <div className="w-full max-w-md mx-auto">
           {/* Mobile logo */}
-          <Link href="/" className="flex items-center gap-2 mb-10 lg:hidden">
+          <HomeLink className="flex items-center gap-2 mb-10 lg:hidden">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
               <Sparkles className="w-4 h-4 text-white" />
             </div>
             <span className="text-xl font-bold text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>
               Resume<span className="text-indigo-400">AI</span>
             </span>
-          </Link>
+          </HomeLink>
 
           <div className="mb-8">
             <h1 className="text-3xl font-black text-white mb-2" style={{ fontFamily: 'Outfit, sans-serif' }}>

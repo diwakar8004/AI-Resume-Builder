@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { motion, AnimatePresence } from "framer-motion";
+import { HomeLink } from "@/components/shared/home-link";
 import {
   FileText,
   LayoutDashboard,
@@ -41,14 +42,14 @@ export function DashboardSidebar() {
     <>
       {/* Logo */}
       <div className="p-4 sm:p-5 border-b border-white/5">
-        <Link href="/" className="flex items-center gap-2.5 group">
+        <HomeLink className="flex items-center gap-2.5 group">
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg">
             <Sparkles className="w-4 h-4 text-white" />
           </div>
           <span className="font-bold text-lg sm:text-xl text-white" style={{ fontFamily: "Outfit, sans-serif" }}>
             Resume<span className="text-indigo-400">AI</span>
           </span>
-        </Link>
+        </HomeLink>
       </div>
 
       {/* Nav */}
@@ -98,7 +99,7 @@ export function DashboardSidebar() {
             className="w-full py-1.5 sm:py-2 rounded-lg text-xs font-bold text-white transition-all duration-200 hover:-translate-y-0.5"
             style={{ background: "linear-gradient(135deg, #4F46E5, #7C3AED)" }}
           >
-            Upgrade — $9/mo
+            Upgrade — ₹9/mo
           </button>
         </Link>
       </div>
@@ -151,14 +152,14 @@ export function DashboardSidebar() {
         className="md:hidden sticky top-0 z-40 flex items-center justify-between px-4 py-3 border-b border-white/5"
         style={{ background: "rgba(13,13,32,0.95)", backdropFilter: "blur(20px)" }}
       >
-        <Link href="/" className="flex items-center gap-2 group">
+        <HomeLink className="flex items-center gap-2 group">
           <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
             <Sparkles className="w-3.5 h-3.5 text-white" />
           </div>
           <span className="font-bold text-sm text-white">
             Resume<span className="text-indigo-400">AI</span>
           </span>
-        </Link>
+        </HomeLink>
         <button onClick={() => setMobileOpen(!mobileOpen)} className="p-2 rounded-lg hover:bg-white/5 transition-colors">
           {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
         </button>

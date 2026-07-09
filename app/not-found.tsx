@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { HomeLink } from '@/components/shared/home-link';
 import { Sparkles, Home, HelpCircle } from 'lucide-react';
 
 export default function NotFound() {
@@ -15,14 +16,14 @@ export default function NotFound() {
 
       {/* Header */}
       <header className="max-w-6xl mx-auto w-full px-6 py-8 flex items-center justify-between relative z-10">
-        <Link href="/" className="flex items-center gap-2">
+        <HomeLink className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
             <Sparkles className="w-4.5 h-4.5 text-white" />
           </div>
           <span className="font-bold text-xl text-white font-['Outfit']">
             Resume<span className="text-indigo-400">AI</span>
           </span>
-        </Link>
+        </HomeLink>
       </header>
 
       {/* Hero section */}
